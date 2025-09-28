@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>KOPBAM – Masuk / Daftar</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{ --primary:#00AEEF; --primary-dark:#0087bf; --accent:#12B76A; --danger:#D92D20; --bg:#F4F8FF; --card:#FFFFFF; --text:#0F172A; --muted:#667185; --border:#E6EAF2; --radius:16px; --shadow:0 6px 24px rgba(16,24,40,.06);} 
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
+    .phone{width:min(420px,100%);margin:0 auto;padding:16px}
+    .hero{position:relative;overflow:hidden;border-radius:20px;border:1px solid #DFF2FF;background:linear-gradient(180deg,#F0FAFF 0%, #E6F7FF 100%);padding:18px}
+    .blob{position:absolute;filter:blur(24px);opacity:.35}
+    .b1{width:160px;height:160px;background:#7dd3fc;border-radius:40% 60% 60% 40%/40% 40% 60% 60%;top:-40px;left:-30px}
+    .b2{width:140px;height:140px;background:#86efac;border-radius:50%;right:-30px;bottom:-30px}
+    .brand{position:relative;display:flex;align-items:center;gap:10px;font-weight:800;z-index:1}
+    .brand img{height:28px}
+    .subtitle{position:relative;margin-top:6px;color:#2E5F87;font-weight:600;z-index:1}
+    .tabs{display:flex;gap:8px;padding:6px;background:#EEF6FF;border:1px solid #DAE9FF;border-radius:12px;width:fit-content;margin:12px auto}
+    .tab{padding:10px 14px;border-radius:10px;cursor:pointer;color:#3E6C92;font-weight:700}
+    .tab.active{background:#FFFFFF;border:1px solid #DAE9FF;box-shadow:var(--shadow);color:#0F172A}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;margin:12px 0}
+    .form{display:grid;gap:12px}
+    label{font-size:.9rem;color:var(--muted)}
+    input{width:100%;padding:12px 12px;border-radius:12px;border:1px solid #D0D5DD;background:#FFFFFF;color:var(--text)}
+    input:focus{outline:none;border-color:var(--primary)}
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    @media(max-width:420px){.grid2{grid-template-columns:1fr}}
+    .btn{display:inline-flex;justify-content:center;align-items:center;gap:10px;padding:12px 14px;border-radius:12px;border:1px solid #1FB6FF;color:#fff;background:linear-gradient(180deg,#36C5FF,#00AEEF);font-weight:800;cursor:pointer}
+    .btn svg{width:18px;height:18px;fill:#fff}
+    .btn.ghost{background:#FFFFFF;color:#0F172A;border:1px solid #D0D5DD}
+    .helper{display:flex;align-items:center;gap:8px;color:#3E6C92;background:#E8F4FF;border:1px solid #DAE9FF;border-radius:12px;padding:10px;margin-top:10px}
+    .helper svg{width:18px;height:18px;fill:#3E6C92}
+  </style>
+</head>
+<body>
+  <div class="phone">
+    <div class="hero">
+      <div class="blob b1"></div><div class="blob b2"></div>
+      <div class="brand"><img src="assets/LOGO.png" alt="KOPBAM"/>KOPBAM</div>
+      <div class="subtitle">Portal Koperasi Karyawan RSBM</div>
+    </div>
+
+    <div class="card center">
+      <div class="tabs">
+        <div id="tabLogin" class="tab active" onclick="switchTab('login')">Login</div>
+        <div id="tabSignup" class="tab" onclick="switchTab('signup')">Register</div>
+      </div>
+
+      <form id="loginForm" class="form" onsubmit="event.preventDefault(); doLogin()">
+        <h2 style="margin:4px 0">Masuk</h2>
+        <label>NIK</label>
+        <input id="nik" maxlength="16" inputmode="numeric" required>
+        <label>NIP</label>
+        <input id="nip" inputmode="numeric" required>
+        <button class="btn" type="submit">
+          <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm1 5v4h3l-4 5-4-5h3V7h2Z"/></svg>
+          Login
+        </button>
+        <div class="helper">
+          <svg viewBox="0 0 24 24"><path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-3.31 0-10 1.66-10 5v3h20v-3c0-3.34-6.69-5-10-5Z"/></svg>
+          Gunakan NIK & NIP yang terdaftar di HR.
+        </div>
+      </form>
+
+      <form id="signupForm" class="form" onsubmit="event.preventDefault(); doSignup()" style="display:none">
+        <h2 style="margin:4px 0">Daftar Akun</h2>
+        <div class="grid2">
+          <div><label>NIK</label><input id="snik" maxlength="16" inputmode="numeric" required></div>
+          <div><label>NIP</label><input id="snip" inputmode="numeric" required></div>
+        </div>
+        <div class="grid2">
+          <div><label>Nama Lengkap</label><input id="sname" required></div>
+          <div><label>Nomor HP</label><input id="sphone" placeholder="62812xxxxxxx" inputmode="numeric" required></div>
+        </div>
+        <div class="grid2">
+          <button class="btn" type="submit"><svg viewBox="0 0 24 24"><path d="M12 5v14m-7-7h14"/></svg>Daftar</button>
+          <button class="btn ghost" type="button" onclick="switchTab('login')">Batal</button>
+        </div>
+        <div class="helper">
+          <svg viewBox="0 0 24 24"><path d="M12 2 2 7l10 5 10-5-10-5Zm0 7-10 5 10 5 10-5-10-5Z"/></svg>
+          Satu NIK hanya boleh satu akun aktif.
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const db={ employees:[{nik:'3276010101010001',nip:'1001',nama:'Andi',phone:'6281212345678'}] };
+    function switchTab(tab){
+      const L=document.getElementById('loginForm');
+      const S=document.getElementById('signupForm');
+      const tL=document.getElementById('tabLogin');
+      const tS=document.getElementById('tabSignup');
+      if(tab==='signup'){S.style.display='grid';L.style.display='none';tS.classList.add('active');tL.classList.remove('active');}
+      else{S.style.display='none';L.style.display='grid';tL.classList.add('active');tS.classList.remove('active');}
+    }
+    function doLogin(){
+      const nik=document.getElementById('nik').value.trim();
+      const nip=document.getElementById('nip').value.trim();
+      const found=db.employees.find(e=>e.nik===nik&&e.nip===nip);
+      if(!found){alert('Akun tidak ditemukan. Silakan daftar.');switchTab('signup');return}
+      localStorage.setItem('kbm_auth','1');
+      localStorage.setItem('kbm_name',found.nama);
+      window.location.href='app.html';
+    }
+    function doSignup(){
+      const nik=document.getElementById('snik').value.trim();
+      const nip=document.getElementById('snip').value.trim();
+      const nama=document.getElementById('sname').value.trim();
+      const phone=document.getElementById('sphone').value.trim();
+      if(!nik||!nip||!nama||!phone){alert('Lengkapi semua data');return}
+      if(nik.length!==16){alert('NIK harus 16 digit');return}
+      if(db.employees.some(e=>e.nik===nik)){alert('NIK sudah terdaftar. Silakan login.');switchTab('login');return}
+      db.employees.push({nik,nip,nama,phone});
+      alert('Pendaftaran berhasil. Silakan login.');
+      switchTab('login');
+    }
+  </script>
+</body>
+</html>

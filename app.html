@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>KOPBAM – Aplikasi</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      /* Palet Biru RSBM */
+      --primary:#00AEEF;      /* biru utama */
+      --primary-dark:#0087bf; /* hover/active */
+      --accent:#12B76A;       /* hijau sukses */
+      --danger:#D92D20;       /* merah */
+      --warning:#F59E0B;      /* kuning */
+      --text:#0F172A;         /* slate-900 */
+      --muted:#667185;        /* slate-500 */
+      --bg:#F4F8FF;           /* latar ringan */
+      --card:#FFFFFF;         /* kartu putih */
+      --border:#E6EAF2;       /* garis halus */
+      --radius:16px; --shadow:0 6px 24px rgba(16,24,40,.06);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
+    .phone{width:min(420px,100%);margin:0 auto;padding:12px 12px 90px}
+
+    /* Header dekoratif (biru RSBM + blob) */
+    .topbar{position:sticky;top:0;border-radius:16px;overflow:hidden;margin-bottom:10px;box-shadow:var(--shadow);z-index:5}
+    .top-bg{position:relative;background:linear-gradient(180deg,#F0FAFF 0%,#E6F7FF 100%);border:1px solid #DAE9FF;padding:14px}
+    .top-bg:before{content:"";position:absolute;right:-30px;top:-40px;width:160px;height:160px;filter:blur(24px);background:#7dd3fc;border-radius:50%}
+    .top-bg:after{content:"";position:absolute;left:-40px;bottom:-40px;width:140px;height:140px;filter:blur(24px);background:#BAE6FD;border-radius:40%}
+    .logo{position:relative;z-index:1;display:flex;gap:10px;align-items:center;font-weight:800}
+    .logo img{height:24px}
+    .period{position:relative;z-index:1;color:var(--muted)}
+
+    /* Kartu & tombol */
+    .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;margin:10px 0}
+    .muted{color:var(--muted)}
+    .big{font-size:1.7rem;font-weight:900}
+    .btn{display:inline-flex;justify-content:center;align-items:center;gap:8px;padding:12px 14px;border-radius:12px;border:1px solid var(--primary);color:#fff;background:linear-gradient(180deg,#36C5FF,#00AEEF);font-weight:800;cursor:pointer}
+    .btn:hover{filter:brightness(1.03)}
+    .btn svg{width:18px;height:18px;fill:#fff}
+    .btn.secondary{background:linear-gradient(180deg,#4ADE80,#12B76A);border-color:#12B76A}
+    .btn.ghost{background:#FFFFFF;color:var(--text);border:1px solid var(--border)}
+
+    /* Akses cepat */
+    .quick{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+    .qa{display:flex;flex-direction:column;align-items:center;gap:8px;padding:12px;border:1px solid #EAECF0;border-radius:14px;background:#FBFDFF;cursor:pointer}
+    .qa svg{width:22px;height:22px;fill:var(--primary)}
+    .qa small{font-weight:700;color:#334155}
+
+    /* Bottom nav */
+    .bottom{position:fixed;left:0;right:0;bottom:0;background:#FFFFFF;border-top:1px solid #EAECF0;box-shadow:0 -6px 18px rgba(16,24,40,.06)}
+    .tabs{display:grid;grid-template-columns:repeat(5,1fr);max-width:420px;margin:0 auto}
+    .tab{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 4px;color:#8A94A6;font-weight:700;cursor:pointer}
+    .tab.active{color:var(--primary)}
+    .tab svg{width:22px;height:22px;fill:currentColor}
+
+    /* Badge dan list */
+    .badge{display:inline-flex;gap:6px;align-items:center;padding:6px 10px;border-radius:999px;border:1px solid #EAECF0;font-size:.8rem;font-weight:700}
+    .info{background:#EFF8FF;color:#1570EF;border-color:#B2DDFF}
+    .success{background:#ECFDF3;color:#067647;border-color:#ABEFC6}
+    .warn{background:#FFFAEB;color:#B54708;border-color:#FEDF89}
+    .danger{background:#FEF3F2;color:#B42318;border-color:#FECDCA}
+
+    .list{display:grid;gap:8px}
+    .row{display:flex;justify-content:space-between;align-items:center;border:1px solid #EAECF0;border-radius:12px;padding:12px;background:#FBFDFF}
+  </style>
+</head>
+<body>
+  <script>
+    // Blokir akses bila belum login
+    if(!localStorage.getItem('kbm_auth')){ window.location.replace('login.html'); }
+  </script>
+
+  <div class="phone">
+    <div class="topbar">
+      <div class="top-bg">
+        <div class="logo"><img src="assets/LOGO.png" alt="KOPBAM"/>KOPBAM</div>
+        <div class="period">Periode: <b id="period">2025</b></div>
+      </div>
+    </div>
+
+    <!-- UTAMA -->
+    <section id="home">
+      <div class="card">
+        <div class="muted">Limit Tersedia</div>
+        <div class="big" id="limit">Rp 0</div>
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+          <button id="applyBtn" class="btn" onclick="applyNow()">
+            <svg viewBox="0 0 24 24"><path d="M12 5v14m-7-7h14"/></svg>Ajukan Pinjaman
+          </button>
+          <button class="btn secondary" onclick="refreshStatus()">
+            <svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 13.66-5.66L20 3v6h-6l2.34-2.34A6 6 0 1 0 18 12h2a8 8 0 1 1-16 0Z"/></svg>Perbarui Status
+          </button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="muted">Status Pengajuan</div>
+        <div style="margin-top:6px"><span id="statusBadge" class="badge warn">Belum diajukan</span></div>
+        <div id="approvedWrap" style="display:none;margin-top:10px">
+          <div class="row">
+            <div>
+              <div class="muted">Jumlah Disetujui</div>
+              <div class="big" id="approvedAmt">Rp 0</div>
+            </div>
+            <span class="badge success">Verifikasi selesai</span>
+          </div>
+          <div class="card" style="margin-top:10px">
+            <div class="muted">Pencairan</div>
+            <p style="margin:6px 0 0">Silakan datang ke <b>Kantor Koperasi</b>. Tidak ada pencairan online.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Akses cepat -->
+      <div class="card">
+        <div class="muted" style="margin-bottom:8px">Akses Cepat</div>
+        <div class="quick">
+          <div class="qa" onclick="switchTab('loans',document.querySelector('[data-tab=\"loans\"]'))"><svg viewBox="0 0 24 24"><path d="M3 6h18v12H3zM3 10h18"/></svg><small>Daftar Pinjaman</small></div>
+          <div class="qa" onclick="applyNow()"><svg viewBox="0 0 24 24"><path d="M12 5v14m-7-7h14"/></svg><small>Ajukan</small></div>
+          <div class="qa" onclick="switchTab('account',document.querySelector('[data-tab=\"account\"]'))"><svg viewBox="0 0 24 24"><path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-3.31 0-10 1.66-10 5v3h20v-3c0-3.34-6.69-5-10-5Z"/></svg><small>Akun</small></div>
+          <div class="qa" onclick="switchTab('settings',document.querySelector('[data-tab=\"settings\"]'))"><svg viewBox="0 0 24 24"><path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm8.94 4.66-1.22-.7a7.94 7.94 0 0 0 0-1.92l1.22-.7a.5.5 0 0 0 .18-.68l-1.5-2.6a.5.5 0 0 0-.65-.2l-1.2.48a8.1 8.1 0 0 0-1.65-.96l-.18-1.28A.5.5 0 0 0 14.5 2h-3a.5.5 0 0 0-.5.42l-.18 1.28a8.1 8.1 0 0 0-1.65.96l-1.2-.48a.5.5 0 0 0-.65.2l-1.5 2.6a.5.5 0 0 0 .18.68l1.22.7a7.94 7.94 0 0 0 0 1.92l-1.22.7a.5.5 0 0 0-.18.68l1.5 2.6a.5.5 0 0 0 .65.2l1.2-.48c.51.39 1.06.72 1.65.96l.18 1.28a.5.5 0 0 0 .5.42h3a.5.5 0 0 0 .5-.42l.18-1.28c.59-.24 1.14-.57 1.65-.96l1.2.48a.5.5 0 0 0 .65-.2l1.5-2.6a.5.5 0 0 0-.18-.68Z"/></svg><small>Pengaturan</small></div>
+        </div>
+      </div>
+
+      <div id="installmentsWrap" class="card" style="display:none">
+        <div style="font-weight:800">Cicilan</div>
+        <p class="muted" style="margin:6px 0">Pembayaran di kantor. Halaman ini hanya menampilkan jadwal & status.</p>
+        <div id="installments" class="list"></div>
+      </div>
+    </section>
+
+    <!-- PINJAMAN -->
+    <section id="loans" style="display:none">
+      <div class="card"><div style="font-weight:800">Daftar Pinjaman</div><p class="muted">Pinjaman aktif & lunas akan tampil di sini.</p></div>
+    </section>
+
+    <!-- AKUN -->
+    <section id="account" style="display:none">
+      <div class="card"><div style="font-weight:800">Akun</div><p class="muted">Nama: <b id="empName">-</b><br>NIK/NIP disembunyikan.</p></div>
+    </section>
+
+    <!-- PENGATURAN -->
+    <section id="settings" style="display:none">
+      <div class="card"><div style="font-weight:800">Pengaturan</div>
+        <div class="list">
+          <div class="row"><span class="muted">Keamanan</span><span class="badge info">Standar</span></div>
+          <div class="row"><span class="muted">Notifikasi</span><span class="badge success">Aktif</span></div>
+          <div class="row"><span class="muted">Sesi</span><button class="btn ghost" onclick="logout()">Keluar</button></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- INBOX -->
+    <section id="inbox" style="display:none">
+      <div class="card"><div style="font-weight:800">Inbox</div><p class="muted">Notifikasi dari koperasi akan ditampilkan di sini.</p></div>
+    </section>
+  </div>
+
+  <!-- Bottom Nav -->
+  <div class="bottom">
+    <div class="tabs">
+      <div class="tab active" data-tab="home" onclick="switchTab('home',this)"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><small>Utama</small></div>
+      <div class="tab" data-tab="loans" onclick="switchTab('loans',this)"><svg viewBox="0 0 24 24"><path d="M3 6h18v12H3zM3 10h18"/></svg><small>Pinjaman</small></div>
+      <div class="tab" data-tab="account" onclick="switchTab('account',this)"><svg viewBox="0 0 24 24"><path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-3.31 0-10 1.66-10 5v3h20v-3c0-3.34-6.69-5-10-5z"/></svg><small>Akun</small></div>
+      <div class="tab" data-tab="settings" onclick="switchTab('settings',this)"><svg viewBox="0 0 24 24"><path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm8.94 4.66-1.22-.7a7.94 7.94 0 0 0 0-1.92l1.22-.7a.5.5 0 0 0 .18-.68l-1.5-2.6a.5.5 0 0 0-.65-.2l-1.2.48a8.1 8.1 0 0 0-1.65-.96l-.18-1.28A.5.5 0 0 0 14.5 2h-3a.5.5 0 0 0-.5.42l-.18 1.28a8.1 8.1 0 0 0-1.65.96l-1.2-.48a.5.5 0 0 0-.65.2l-1.5 2.6a.5.5 0 0 0-.18.68Z"/></svg><small>Pengaturan</small></div>
+      <div class="tab" data-tab="inbox" onclick="switchTab('inbox',this)"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/></svg><small>Inbox</small></div>
+    </div>
+  </div>
+
+  <script>
+    // State awal (nanti diganti fetch ke Google Apps Script)
+    const state={
+      name: localStorage.getItem('kbm_name')||'Karyawan',
+      period:'2025',
+      limit:15000000,
+      status:'belum',          // belum | diajukan | verifikasi | disetujui | dicairkan | lunas
+      approvedAmount:0,
+      installments:[]
+    };
+
+    // Init UI
+    document.getElementById('period').textContent=state.period;
+    document.getElementById('limit').textContent=idr(state.limit);
+    document.getElementById('empName') && (document.getElementById('empName').textContent=state.name);
+
+    // Tab switching
+    function switchTab(id,el){
+      ['home','loans','account','settings','inbox'].forEach(s=>document.getElementById(s).style.display='none');
+      document.getElementById(id).style.display='block';
+      document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+      if(el) el.classList.add('active');
+    }
+
+    // Actions
+    function applyNow(){
+      if(state.status==='belum'){
+        state.status='diajukan';
+        updateStatus();
+        alert('Pengajuan terkirim. Menunggu verifikasi admin.');
+      }
+    }
+    function refreshStatus(){
+      const seq=['belum','diajukan','verifikasi','disetujui','dicairkan','lunas'];
+      const i=(seq.indexOf(state.status)+1)%seq.length; state.status=seq[i];
+      if(state.status==='disetujui'){ state.approvedAmount=12000000; }
+      if(state.status==='dicairkan'){
+        state.installments=[...Array(12)].map((_,k)=>({bulan:k+1,jatuh:`2025-${String(k+1).padStart(2,'0')}-10`,jumlah:1000000,status:k<2?'lunas':'belum'}));
+      }
+      updateStatus();
+    }
+
+    function updateStatus(){
+      const badge=document.getElementById('statusBadge');
+      const approvedWrap=document.getElementById('approvedWrap');
+      const instWrap=document.getElementById('installmentsWrap');
+      if(state.status==='belum'){badge.textContent='Belum diajukan';badge.className='badge warn';approvedWrap.style.display='none';instWrap.style.display='none'}
+      if(state.status==='diajukan'){badge.textContent='Diajukan';badge.className='badge info';approvedWrap.style.display='none';instWrap.style.display='none'}
+      if(state.status==='verifikasi'){badge.textContent='Verifikasi Admin';badge.className='badge info';approvedWrap.style.display='none';instWrap.style.display='none'}
+      if(state.status==='disetujui'){badge.textContent='Disetujui';badge.className='badge success';approvedWrap.style.display='block';document.getElementById('approvedAmt').textContent=idr(state.approvedAmount);instWrap.style.display='none'}
+      if(state.status==='dicairkan'){badge.textContent='Dicairkan';badge.className='badge success';approvedWrap.style.display='block';renderInstallments();instWrap.style.display='block'}
+      if(state.status==='lunas'){badge.textContent='Lunas';badge.className='badge success';approvedWrap.style.display='block';renderInstallments(true);instWrap.style.display='block'}
+    }
+
+    function renderInstallments(allPaid=false){
+      const wrap=document.getElementById('installments');
+      wrap.innerHTML='';
+      (state.installments||[]).forEach(it=>{
+        const paid = allPaid || it.status==='lunas';
+        const row=document.createElement('div');
+        row.className='row';
+        row.innerHTML=`<div><div style="font-weight:700">Cicilan #${it.bulan}</div><div class=muted>Jatuh tempo ${it.jatuh}</div></div>
+                        <div style="text-align:right"><div style="font-weight:800">${idr(it.jumlah)}</div>
+                        <span class="badge ${paid?'success':'warn'}">${paid?'Lunas':'Belum'}</span></div>`;
+        wrap.appendChild(row);
+      });
+    }
+
+    function logout(){
+      localStorage.removeItem('kbm_auth');
+      localStorage.removeItem('kbm_name');
+      location.replace('login.html');
+    }
+
+    const idr=n=>new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(n);
+
+    // Buka tab awal
+    switchTab('home',document.querySelector('[data-tab="home"]'));
+  </script>
+</body>
+</html>
