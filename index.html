@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>KOPBAM • Koperasi Karyawan RSBM</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      /* Palet futuristik biru-putih RSBM */
+      --primary:#0EB6F7;       /* biru utama */
+      --primary-2:#2DD4FF;     /* biru terang */
+      --accent:#10B981;        /* hijau sukses */
+      --danger:#EF4444;        /* merah */
+      --warning:#F59E0B;       /* kuning */
+      --ink:#0F172A;           /* teks gelap */
+      --muted:#6B7280;         /* teks sekunder */
+      --bg:#F6FAFF;            /* latar terang */
+      --card:#FFFFFF;          /* kartu putih */
+      --line:#E6EEF6;          /* garis halus */
+      --glass:rgba(255,255,255,.6);
+      --radius:18px; 
+      --shadow:0 20px 60px rgba(13, 60, 97, .10);
+      --glow:0 0 0 rgba(0,0,0,0);
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);}
+    .phone{width:min(440px,100%);margin:0 auto;padding:14px 14px 104px}
+
+    /* ====== BACKGROUND ORNAMEN ====== */
+    .sky{position:fixed;inset:0;z-index:-1;background:
+        radial-gradient(900px 600px at -10% -10%, rgba(14,182,247,.18), transparent 60%),
+        radial-gradient(800px 500px at 110% 0%, rgba(45,212,255,.18), transparent 60%),
+        linear-gradient(180deg,#F8FBFF 0%, #EFF7FF 60%, #E8F3FF 100%);
+    }
+
+    /* ====== HEADER GLASS ====== */
+    .topbar{position:sticky;top:0;border-radius:18px;overflow:hidden;margin-bottom:14px;box-shadow:var(--shadow)}
+    .top-bg{position:relative;border:1px solid var(--line);background:linear-gradient(180deg, rgba(255,255,255,.9) 0%, rgba(255,255,255,.75) 100%);backdrop-filter: blur(12px);padding:16px}
+    .top-bg:before,.top-bg:after{content:"";position:absolute;filter:blur(28px);opacity:.5}
+    .top-bg:before{right:-30px;top:-40px;width:180px;height:180px;border-radius:50%;background:#BFEAFF}
+    .top-bg:after{left:-40px;bottom:-40px;width:160px;height:160px;border-radius:40%;background:#B6FFE7}
+    .logo{position:relative;z-index:1;display:flex;gap:10px;align-items:center}
+    .logo img{height:26px;filter:drop-shadow(0 2px 6px rgba(0,0,0,.05))}
+    .logo b{font-size:1.05rem;letter-spacing:.5px}
+    .period{position:relative;z-index:1;color:var(--muted)}
+
+    /* ====== KARTU / FORM ====== */
+    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;margin:12px 0}
+    .muted{color:var(--muted)}
+    .big{font-size:1.8rem;font-weight:900;letter-spacing:.2px}
+    .form{display:grid;gap:12px}
+    label{font-size:.9rem;color:var(--muted)}
+    input{width:100%;padding:13px 12px;border-radius:14px;border:1px solid #D6E4F0;background:#fff;color:var(--ink);transition:box-shadow .25s ease,border-color .25s ease,transform .06s ease}
+    input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 4px rgba(14,182,247,.15)}
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    @media(max-width:460px){.grid2{grid-template-columns:1fr}}
+
+    /* ====== TOMBOL DENGAN EFEK FUTURISTIK ====== */
+    .btn{--c1:var(--primary);--c2:var(--primary-2);position:relative;display:inline-flex;justify-content:center;align-items:center;gap:10px;padding:13px 16px;border-radius:14px;border:1px solid rgba(14,182,247,.25);color:#001219;font-weight:800;cursor:pointer;user-select:none;background:
+      linear-gradient(180deg, rgba(255,255,255,.35) 0%, rgba(255,255,255,.15) 50%, rgba(255,255,255,.1) 100%),
+      linear-gradient(180deg, var(--c1) 0%, var(--c2) 100%);
+      box-shadow:0 10px 24px rgba(14,182,247,.25), inset 0 0 0 1px rgba(255,255,255,.35);
+      transition:transform .08s ease, filter .25s ease, box-shadow .25s ease;
+    }
+    .btn svg{width:18px;height:18px;fill:#fff;filter:drop-shadow(0 1px 0 rgba(0,0,0,.08))}
+    .btn:hover{filter:saturate(1.06) brightness(1.02)}
+    .btn:active{transform:translateY(1px)}
+    .btn-outline{--c1:#fff;--c2:#fff;background:linear-gradient(180deg,#fff,#fff);color:var(--ink);border-color:#D0DBE8;box-shadow:inset 0 0 0 1px rgba(14,182,247,.18), 0 8px 22px rgba(10,40,60,.06)}
+    .btn-outline:hover{box-shadow:inset 0 0 0 1px rgba(14,182,247,.28), 0 10px 26px rgba(10,40,60,.08)}
+
+    /* Tombol khusus: Login (biru) & Register (outline) */
+    .btn-login{--c1:#1BC1FF;--c2:#12A8F0;color:#02283A}
+    .btn-register{background:#fff}
+
+    /* Micro-interaction ripple */
+    .btn::after{content:"";position:absolute;inset:-2px;border-radius:14px;padding:2px;background:conic-gradient(from 180deg at 50% 50%, rgba(14,182,247,.15), rgba(255,255,255,0) 30%, rgba(45,212,255,.22), rgba(255,255,255,0) 70%, rgba(14,182,247,.15)); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; opacity:0; transition:opacity .25s ease}
+    .btn:hover::after{opacity:1}
+
+    /* ====== AUTH HERO ====== */
+    .hero{position:relative;overflow:hidden;border-radius:22px;border:1px solid var(--line);background:radial-gradient(650px 300px at 20% -50%, rgba(14,182,247,.35), transparent 60%), radial-gradient(380px 260px at 110% 0%, rgba(45,212,255,.28), transparent 60%), linear-gradient(180deg,#F8FBFF 0%, #EFF7FF 60%, #EAF4FF 100%);padding:22px;margin-top:8px}
+    .hero .light{position:absolute;inset:0;background:radial-gradient(80px 40px at 12% 14%, rgba(255,255,255,.9), transparent 30%), radial-gradient(100px 50px at 82% 8%, rgba(255,255,255,.9), transparent 40%);opacity:.65}
+    .orb{position:absolute;border-radius:50%;filter:blur(18px);opacity:.55;animation:float 10s ease-in-out infinite}
+    .orb.b1{width:120px;height:120px;left:-20px;top:-30px;background:#BFEAFF}
+    .orb.b2{width:140px;height:140px;right:-30px;bottom:-20px;background:#B6FFE7;animation-delay:.6s}
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(10px)}}
+    .brand{position:relative;display:flex;align-items:center;gap:12px;font-weight:900;letter-spacing:.4px;z-index:1}
+    .brand img{height:36px}
+    .subtitle{position:relative;margin-top:6px;color:#2D6C92;font-weight:700;z-index:1}
+
+    /* ====== QUICK & BADGE ====== */
+    .quick{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+    .qa{display:flex;flex-direction:column;align-items:center;gap:8px;padding:12px;border:1px solid #E2ECF6;border-radius:14px;background:linear-gradient(180deg,#FFFFFF, #F8FBFF);cursor:pointer;transition:transform .08s}
+    .qa:hover{transform:translateY(-1px)}
+    .qa svg{width:22px;height:22px;fill:var(--primary)}
+    .qa small{font-weight:800;color:#1F2A37}
+
+    .badge{display:inline-flex;gap:6px;align-items:center;padding:6px 10px;border-radius:999px;border:1px solid #E2ECF6;font-size:.8rem;font-weight:800}
+    .info{background:#EFF8FF;color:#1570EF;border-color:#B2DDFF}
+    .success{background:#ECFDF3;color:#067647;border-color:#ABEFC6}
+    .warn{background:#FFFAEB;color:#B54708;border-color:#FEDF89}
+
+    .list{display:grid;gap:10px}
+
+    /* ====== BOTTOM NAV ====== */
+    .bottom{position:fixed;left:0;right:0;bottom:0;background:rgba(255,255,255,.85);backdrop-filter:blur(10px);border-top:1px solid var(--line);box-shadow:0 -12px 30px rgba(13,60,97,.10)}
+    .tabs-bottom{display:grid;grid-template-columns:repeat(5,1fr);max-width:440px;margin:0 auto}
+    .btab{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 4px;color:#8A94A6;font-weight:800;cursor:pointer;transition:color .2s}
+    .btab.active{color:var(--primary)}
+    .btab svg{width:22px;height:22px;fill:currentColor}
+
+    .view{display:none}
+    .view.active{display:block}
+    .hidden{display:none}
+  </style>
+</head>
+<body>
+  <div class="sky" aria-hidden="true"></div>
+  <div class="phone">
+    <!-- ========= AUTH ========= -->
+    <section id="auth" class="view active">
+      <div class="hero">
+        <div class="light"></div>
+        <div class="orb b1"></div>
+        <div class="orb b2"></div>
+        <div class="brand"><img src="assets/LOGO.png" alt="KOPBAM"><b>KOPBAM</b></div>
+        <div class="subtitle">Portal Koperasi Karyawan RSBM</div>
+      </div>
+
+      <div class="card">
+        <div style="display:flex;gap:10px;justify-content:center;margin-bottom:10px">
+          <button id="tabLogin" class="btn btn-login" onclick="switchAuth('login')">Login</button>
+          <button id="tabSignup" class="btn btn-outline btn-register" onclick="switchAuth('signup')">Register</button>
+        </div>
+
+        <!-- LOGIN -->
+        <form id="loginForm" class="form" onsubmit="event.preventDefault(); doLogin()">
+          <label>NIK</label>
+          <input id="nik" maxlength="16" inputmode="numeric" placeholder="16 digit NIK" required>
+          <label>NIP</label>
+          <input id="nip" inputmode="numeric" placeholder="NIP Karyawan RSBM" required>
+          <button class="btn btn-login" type="submit">
+            <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm1 5v4h3l-4 5-4-5h3V7h2Z"/></svg>
+            Masuk
+          </button>
+          <div class="badge info" style="margin-top:6px">Gunakan NIK & NIP terdaftar</div>
+        </form>
+
+        <!-- SIGNUP -->
+        <form id="signupForm" class="form hidden" onsubmit="event.preventDefault(); doSignup()">
+          <div class="grid2">
+            <div><label>NIK</label><input id="snik" maxlength="16" inputmode="numeric" required></div>
+            <div><label>NIP</label><input id="snip" inputmode="numeric" required></div>
+          </div>
+          <div class="grid2">
+            <div><label>Nama Lengkap</label><input id="sname" required></div>
+            <div><label>Nomor HP</label><input id="sphone" placeholder="62812xxxxxxx" inputmode="numeric" required></div>
+          </div>
+          <div class="grid2">
+            <button class="btn btn-outline" type="button" onclick="switchAuth('login')">Batal</button>
+            <button class="btn" type="submit">
+              <svg viewBox="0 0 24 24"><path d="M12 5v14m-7-7h14"/></svg>
+              Daftar
+            </button>
+          </div>
+          <div class="badge warn" style="margin-top:6px">Satu NIK hanya untuk satu akun</div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ========= APP ========= -->
+    <section id="app" class="view">
+      <div class="topbar">
+        <div class="top-bg">
+          <div class="logo"><img src="assets/LOGO.png" alt="KOPBAM"><b>KOPBAM</b></div>
+          <div class="period">Periode: <b id="period">2025</b></div>
+        </div>
+      </div>
+
+      <!-- HOME -->
+      <section id="home">
+        <div class="card">
+          <div class="muted">Limit Tersedia</div>
+          <div class="big" id="limit">Rp 0</div>
+          <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap">
+            <button id="applyBtn" class="btn" onclick="applyNow()"><svg viewBox="0 0 24 24"><path d="M12 5v14m-7-7h14"/></svg>Ajukan Pinjaman</button>
+            <button class="btn" style="--c1:#20E3B2;--c2:#10B981" onclick="refreshStatus()"><svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 13.66-5.66L20 3v6h-6l2.34-2.34A6 6 0 1 0 18 12h2a8 8 0 1 1-16 0Z"/></svg>Perbarui Status</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="muted">Status Pengajuan</div>
+          <div style="margin-top:6px"><span id="statusBadge" class="badge warn">Belum diajukan</span></div>
+          <div id="approvedWrap" style="display:none;margin-top:10px">
+            <div class="list">
+              <div style="display:flex;justify-content:space-between;align-items:center;border:1px solid #E2ECF6;border-radius:14px;padding:12px;background:linear-gradient(180deg,#FFFFFF,#F8FBFF)">
+                <div>
+                  <div class="muted">Jumlah Disetujui</div>
+                  <div class="big" id="approvedAmt">Rp 0</div>
+                </div>
+                <span class="badge success">Verifikasi selesai</span>
+              </div>
+              <div class="card" style="margin:0">
+                <div class="muted">Pencairan</div>
+                <p style="margin:6px 0 0">Silakan datang ke <b>Kantor Koperasi</b>. Tidak ada pencairan online.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="muted" style="margin-bottom:8px">Akses Cepat</div>
+          <div class="quick">
+            <div class="qa" onclick="switchTab('loans',document.querySelector('[data-tab=\"loans\"]'))"><svg viewBox="0 0 24 24"><path d="M3 6h18v12H3zM3 10h18"/></svg><small>Daftar Pinjaman</small></div>
+            <div class="qa" onclick="applyNow()"><svg viewBox="0 0 24 24"><path d="M12 5v14m-7-7h14"/></svg><small>Ajukan</small></div>
+            <div class="qa" onclick="switchTab('account',document.querySelector('[data-tab=\"account\"]'))"><svg viewBox="0 0 24 24"><path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-3.31 0-10 1.66-10 5v3h20v-3c0-3.34-6.69-5-10-5Z"/></svg><small>Akun</small></div>
+            <div class="qa" onclick="switchTab('settings',document.querySelector('[data-tab=\"settings\"]'))"><svg viewBox="0 0 24 24"><path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm8.94 4.66-1.22-.7a7.94 7.94 0 0 0 0-1.92l1.22-.7a.5.5 0 0 0 .18-.68l-1.5-2.6a.5.5 0 0 0-.65-.2l-1.2.48a8.1 8.1 0 0 0-1.65-.96l-.18-1.28A.5.5 0 0 0 14.5 2h-3a.5.5 0 0 0-.5.42l-.18 1.28a8.1 8.1 0 0 0-1.65.96l-1.2-.48a.5.5 0 0 0-.65.2l-1.5 2.6a.5.5 0 0 0 .18.68Z"/></svg><small>Pengaturan</small></div>
+          </div>
+        </div>
+
+        <div id="installmentsWrap" class="card" style="display:none">
+          <div style="font-weight:900">Cicilan</div>
+          <p class="muted" style="margin:6px 0">Pembayaran di kantor. Halaman ini hanya menampilkan jadwal & status.</p>
+          <div id="installments" class="list"></div>
+        </div>
+      </section>
+
+      <!-- LOANS -->
+      <section id="loans" class="hidden">
+        <div class="card"><div style="font-weight:900">Daftar Pinjaman</div><p class="muted">Pinjaman aktif & lunas akan tampil di sini.</p></div>
+      </section>
+
+      <!-- ACCOUNT -->
+      <section id="account" class="hidden">
+        <div class="card"><div style="font-weight:900">Akun</div><p class="muted">Nama: <b id="empName">-</b><br>NIK/NIP disembunyikan.</p></div>
+      </section>
+
+      <!-- SETTINGS -->
+      <section id="settings" class="hidden">
+        <div class="card"><div style="font-weight:900">Pengaturan</div>
+          <div class="list">
+            <div style="display:flex;justify-content:space-between;align-items:center;border:1px solid #E2ECF6;border-radius:14px;padding:12px;background:linear-gradient(180deg,#FFFFFF,#F8FBFF)"><span class="muted">Keamanan</span><span class="badge info">Standar</span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;border:1px solid #E2ECF6;border-radius:14px;padding:12px;background:linear-gradient(180deg,#FFFFFF,#F8FBFF)"><span class="muted">Notifikasi</span><span class="badge success">Aktif</span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;border:1px solid #E2ECF6;border-radius:14px;padding:12px;background:linear-gradient(180deg,#FFFFFF,#F8FBFF)"><span class="muted">Sesi</span><button class="btn btn-outline" onclick="logout()">Keluar</button></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- INBOX -->
+      <section id="inbox" class="hidden">
+        <div class="card"><div style="font-weight:900">Inbox</div><p class="muted">Notifikasi dari koperasi akan ditampilkan di sini.</p></div>
+      </section>
+    </section>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <div id="bottomNav" class="bottom hidden">
+    <div class="tabs-bottom">
+      <div class="btab active" data-tab="home" onclick="switchTab('home',this)"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><small>Utama</small></div>
+      <div class="btab" data-tab="loans" onclick="switchTab('loans',this)"><svg viewBox="0 0 24 24"><path d="M3 6h18v12H3zM3 10h18"/></svg><small>Pinjaman</small></div>
+      <div class="btab" data-tab="account" onclick="switchTab('account',this)"><svg viewBox="0 0 24 24"><path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-3.31 0-10 1.66-10 5v3h20v-3c0-3.34-6.69-5-10-5z"/></svg><small>Akun</small></div>
+      <div class="btab" data-tab="settings" onclick="switchTab('settings',this)"><svg viewBox="0 0 24 24"><path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm8.94 4.66-1.22-.7a7.94 7.94 0 0 0 0-1.92l1.22-.7a.5.5 0 0 0 .18-.68l-1.5-2.6a.5.5 0 0 0-.65-.2l-1.2.48a8.1 8.1 0 0 0-1.65-.96l-.18-1.28A.5.5 0 0 0 14.5 2h-3a.5.5 0 0 0-.5.42l-.18 1.28c-.59-.24 1.14-.57 1.65-.96l1.2.48a.5.5 0 0 0 .65-.2l1.5-2.6a.5.5 0 0 0-.18-.68Z"/></svg><small>Pengaturan</small></div>
+      <div class="btab" data-tab="inbox" onclick="switchTab('inbox',this)"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/></svg><small>Inbox</small></div>
+    </div>
+  </div>
+
+  <script>
+    // ===== Mock database (ganti dengan Google Apps Script nanti) =====
+    const db={ employees:[{nik:'3276010101010001',nip:'1001',nama:'Andi',phone:'6281212345678'}] };
+
+    // ===== Auth logic =====
+    const appView=document.getElementById('app');
+    const authView=document.getElementById('auth');
+    const bottomNav=document.getElementById('bottomNav');
+
+    window.addEventListener('load',()=>{ localStorage.getItem('kbm_auth')==='1'? goApp() : goAuth(); });
+
+    function goApp(){
+      authView.classList.remove('active'); authView.classList.add('hidden');
+      appView.classList.add('active'); appView.classList.remove('hidden');
+      bottomNav.classList.remove('hidden');
+      state.name=localStorage.getItem('kbm_name')||'Karyawan';
+      document.getElementById('empName') && (document.getElementById('empName').textContent=state.name);
+      document.getElementById('period').textContent=state.period;
+      document.getElementById('limit').textContent=idr(state.limit);
+      switchTab('home',document.querySelector('.btab[data-tab="home"]'));
+    }
+    function goAuth(){
+      appView.classList.remove('active'); appView.classList.add('hidden');
+      authView.classList.add('active'); authView.classList.remove('hidden');
+      bottomNav.classList.add('hidden');
+    }
+
+    function switchAuth(tab){
+      const L=document.getElementById('loginForm');
+      const S=document.getElementById('signupForm');
+      const tL=document.getElementById('tabLogin');
+      const tS=document.getElementById('tabSignup');
+      if(tab==='signup'){ S.classList.remove('hidden'); L.classList.add('hidden'); tS.classList.add('btn-login'); tL.classList.remove('btn-login'); }
+      else { S.classList.add('hidden'); L.classList.remove('hidden'); tL.classList.add('btn-login'); tS.classList.remove('btn-login'); }
+    }
+
+    function doLogin(){
+      const nik=document.getElementById('nik').value.trim();
+      const nip=document.getElementById('nip').value.trim();
+      const found=db.employees.find(e=>e.nik===nik&&e.nip===nip);
+      if(!found){ alert('Akun tidak ditemukan. Silakan daftar.'); switchAuth('signup'); return; }
+      localStorage.setItem('kbm_auth','1');
+      localStorage.setItem('kbm_name',found.nama);
+      goApp();
+    }
+
+    function doSignup(){
+      const nik=document.getElementById('snik').value.trim();
+      const nip=document.getElementById('snip').value.trim();
+      const nama=document.getElementById('sname').value.trim();
+      const phone=document.getElementById('sphone').value.trim();
+      if(!nik||!nip||!nama||!phone){ alert('Lengkapi semua data'); return; }
+      if(nik.length!==16){ alert('NIK harus 16 digit'); return; }
+      if(db.employees.some(e=>e.nik===nik)){ alert('NIK sudah terdaftar. Silakan login.'); switchAuth('login'); return; }
+      db.employees.push({nik,nip,nama,phone});
+      alert('Pendaftaran berhasil. Silakan login.');
+      switchAuth('login');
+    }
+
+    function logout(){ localStorage.removeItem('kbm_auth'); localStorage.removeItem('kbm_name'); goAuth(); }
+
+    // ===== App state & actions =====
+    const state={ name:'Karyawan', period:'2025', limit:15000000, status:'belum', approvedAmount:0, installments:[] };
+
+    function switchTab(id,el){ ['home','loans','account','settings','inbox'].forEach(s=>document.getElementById(s).classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); document.querySelectorAll('.btab').forEach(t=>t.classList.remove('active')); if(el) el.classList.add('active'); }
+
+    const idr=n=>new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(n);
+
+    function applyNow(){ if(state.status==='belum'){ state.status='diajukan'; updateStatus(); alert('Pengajuan terkirim. Menunggu verifikasi admin.'); } }
+    function refreshStatus(){ const seq=['belum','diajukan','verifikasi','disetujui','dicairkan','lunas']; const i=(seq.indexOf(state.status)+1)%seq.length; state.status=seq[i]; if(state.status==='disetujui'){ state.approvedAmount=12000000; } if(state.status==='dicairkan'){ state.installments=[...Array(12)].map((_,k)=>({bulan:k+1,jatuh:`2025-${String(k+1).padStart(2,'0')}-10`,jumlah:1000000,status:k<2?'lunas':'belum'})); } updateStatus(); }
+
+    function updateStatus(){ const badge=document.getElementById('statusBadge'); const approvedWrap=document.getElementById('approvedWrap'); const instWrap=document.getElementById('installmentsWrap'); if(state.status==='belum'){badge.textContent='Belum diajukan';badge.className='badge warn';approvedWrap.style.display='none';instWrap.style.display='none'} if(state.status==='diajukan'){badge.textContent='Diajukan';badge.className='badge info';approvedWrap.style.display='none';instWrap.style.display='none'} if(state.status==='verifikasi'){badge.textContent='Verifikasi Admin';badge.className='badge info';approvedWrap.style.display='none';instWrap.style.display='none'} if(state.status==='disetujui'){badge.textContent='Disetujui';badge.className='badge success';approvedWrap.style.display='block';document.getElementById('approvedAmt').textContent=idr(state.approvedAmount);instWrap.style.display='none'} if(state.status==='dicairkan'){badge.textContent='Dicairkan';badge.className='badge success';approvedWrap.style.display='block';renderInstallments();instWrap.style.display='block'} if(state.status==='lunas'){badge.textContent='Lunas';badge.className='badge success';approvedWrap.style.display='block';renderInstallments(true);instWrap.style.display='block'} }
+
+    function renderInstallments(allPaid=false){ const wrap=document.getElementById('installments'); wrap.innerHTML=''; (state.installments||[]).forEach(it=>{ const paid=allPaid||it.status==='lunas'; const item=document.createElement('div'); item.style.cssText='display:flex;justify-content:space-between;align-items:center;border:1px solid #E2ECF6;border-radius:14px;padding:12px;background:linear-gradient(180deg,#FFFFFF,#F8FBFF)'; item.innerHTML=`<div><div style="font-weight:800">Cicilan #${it.bulan}</div><div class=muted>Jatuh tempo ${it.jatuh}</div></div><div style="text-align:right"><div style="font-weight:900">${idr(it.jumlah)}</div><span class="badge ${paid?'success':'warn'}">${paid?'Lunas':'Belum'}</span></div>`; wrap.appendChild(item); }); }
+  </script>
+</body>
+</html>
