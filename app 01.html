@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>KOPBAM • Demo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --primary:#0EB6F7; --primary-2:#2DD4FF; --accent:#10B981; --danger:#EF4444; --warning:#F59E0B;
+      --ink:#0F172A; --muted:#6B7280; --bg:#F6FAFF; --card:#FFFFFF; --line:#E6EEF6;
+      --radius:18px; --shadow:0 20px 60px rgba(13,60,97,.10);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+    .phone{width:min(440px,100%);margin:0 auto;padding:14px 14px 88px}
+
+    /* Futuristic background */
+    .sky{position:fixed;inset:0;z-index:-2;background:
+      radial-gradient(900px 600px at -10% -10%, rgba(14,182,247,.18), transparent 60%),
+      radial-gradient(800px 500px at 110% 0%, rgba(45,212,255,.18), transparent 60%),
+      linear-gradient(180deg,#F8FBFF 0%, #EFF7FF 60%, #E8F3FF 100%);
+    }
+    .particles{position:fixed;inset:0;pointer-events:none;z-index:-1;opacity:.6}
+    .dot{position:absolute;width:6px;height:6px;border-radius:50%;background:radial-gradient(circle,#bfeaff,transparent 70%);animation:floatY 8s ease-in-out infinite}
+    .dot:nth-child(2){left:10%;top:40%;animation-delay:.6s}
+    .dot:nth-child(3){left:80%;top:20%;animation-delay:1.2s}
+    .dot:nth-child(4){left:70%;top:75%;animation-delay:1.8s}
+    @keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+
+    /* Cards & inputs */
+    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;margin:12px 0}
+    .muted{color:var(--muted)} .big{font-size:1.8rem;font-weight:900;letter-spacing:.2px}
+    .form{display:grid;gap:12px}
+    label{font-size:.9rem;color:var(--muted)}
+    input,select{width:100%;padding:13px 12px;border-radius:14px;border:1px solid #D6E4F0;background:#fff;color:var(--ink);transition:box-shadow .25s,border-color .25s,transform .06s}
+    input:focus,select:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 4px rgba(14,182,247,.15)}
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    @media(max-width:460px){.grid2{grid-template-columns:1fr}}
+
+    /* Buttons */
+    .btn{--c1:var(--primary);--c2:var(--primary-2);position:relative;display:inline-flex;justify-content:center;align-items:center;gap:10px;padding:13px 16px;border-radius:14px;border:1px solid rgba(14,182,247,.25);color:#02283A;font-weight:800;cursor:pointer;user-select:none;background:
+      linear-gradient(180deg, rgba(255,255,255,.35) 0%, rgba(255,255,255,.15) 50%, rgba(255,255,255,.1) 100%),
+      linear-gradient(180deg, var(--c1) 0%, var(--c2) 100%);
+      box-shadow:0 10px 24px rgba(14,182,247,.25), inset 0 0 0 1px rgba(255,255,255,.35);
+      transition:transform .08s ease, filter .25s ease, box-shadow .25s ease;
+    }
+    .btn:hover{filter:saturate(1.06) brightness(1.02)}
+    .btn:active{transform:translateY(1px)}
+    .btn[disabled]{opacity:.6;cursor:not-allowed;filter:grayscale(12%)}
+    .btn-outline{background:#fff;color:var(--ink);border:1px solid #D0DBE8;box-shadow:inset 0 0 0 1px rgba(14,182,247,.18), 0 8px 22px rgba(10,40,60,.06)}
+    .btn-login{--c1:#1BC1FF;--c2:#12A8F0}
+    .hidden{display:none}
+
+    /* Hero / header */
+    .hero{position:relative;overflow:hidden;border-radius:22px;border:1px solid var(--line);background:
+      radial-gradient(650px 300px at 20% -50%, rgba(14,182,247,.35), transparent 60%),
+      radial-gradient(380px 260px at 110% 0%, rgba(45,212,255,.28), transparent 60%),
+      linear-gradient(180deg,#F8FBFF 0%, #EFF7FF 60%, #EAF4FF 100%);
+      padding:22px;margin-top:8px}
+    .orb{position:absolute;border-radius:50%;filter:blur(18px);opacity:.55;animation:float 10s ease-in-out infinite}
+    .orb.b1{width:120px;height:120px;left:-20px;top:-30px;background:#BFEAFF}
+    .orb.b2{width:140px;height:140px;right:-30px;bottom:-20px;background:#B6FFE7;animation-delay:.6s}
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(10px)}}
+    .brand{position:relative;display:flex;align-items:center;gap:12px;font-weight:900;letter-spacing:.4px;z-index:1}
+    .brand img{height:36px}
+    .subtitle{position:relative;margin-top:6px;color:#2D6C92;font-weight:700;z-index:1}
+
+    /* Topbar */
+    .topbar{position:sticky;top:0;border-radius:18px;overflow:hidden;margin-bottom:14px;box-shadow:var(--shadow)}
+    .top-bg{position:relative;border:1px solid var(--line);background:linear-gradient(180deg, rgba(255,255,255,.9) 0%, rgba(255,255,255,.75) 100%);backdrop-filter: blur(12px);padding:16px}
+    .top-bg:before,.top-bg:after{content:"";position:absolute;filter:blur(28px);opacity:.5}
+    .top-bg:before{right:-30px;top:-40px;width:180px;height:180px;border-radius:50%;background:#BFEAFF}
+    .top-bg:after{left:-40px;bottom:-40px;width:160px;height:160px;border-radius:40%;background:#B6FFE7}
+    .logo{position:relative;z-index:1;display:flex;gap:10px;align-items:center}
+    .logo img{height:26px}
+    .logo b{font-size:1.05rem;letter-spacing:.5px}
+    .period{position:relative;z-index:1;color:var(--muted)}
+
+    /* Views & tabs */
+    .view{display:none} .view.active{display:block}
+    .bottom{position:fixed;left:0;right:0;bottom:0;background:rgba(255,255,255,.9);backdrop-filter:blur(10px);border-top:1px solid var(--line);box-shadow:0 -12px 30px rgba(13,60,97,.10)}
+    .tabs-bottom{display:grid;grid-template-columns:repeat(5,1fr);max-width:440px;margin:0 auto}
+    .btab{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 4px;color:#8A94A6;font-weight:800;cursor:pointer;transition:color .2s}
+    .btab.active{color:var(--primary)}
+    .btab svg{width:22px;height:22px;fill:currentColor}
+
+    /* Badges */
+    .badge{display:inline-flex;gap:6px;align-items:center;padding:6px 10px;border-radius:999px;border:1px solid #E2ECF6;font-size:.8rem;font-weight:800}
+    .info{background:#EFF8FF;color:#1570EF;border-color:#B2DDFF}
+    .success{background:#ECFDF3;color:#067647;border-color:#ABEFC6}
+    .warn{background:#FFFAEB;color:#B54708;border-color:#FEDF89}
+
+    /* Subtle enter fade */
+    .fade-in{animation:fade .35s ease both}
+    @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+  </style>
+</head>
+<body>
+  <div class="sky" aria-hidden="true"></div>
+  <div class="particles" aria-hidden="true">
+    <div class="dot" style="left:20%;top:15%"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+  </div>
+
+  <div class="phone">
+    <!-- ========== AUTH ========== -->
+    <section id="auth" class="view active fade-in">
+      <div class="hero">
+        <div class="orb b1"></div><div class="orb b2"></div>
+        <div class="brand"><img src="assets/LOGO.png" alt="KOPBAM"><b>KOPBAM</b></div>
+        <div class="subtitle">Portal Koperasi Karyawan RSBM</div>
+      </div>
+
+      <div class="card">
+        <div style="display:flex;gap:10px;justify-content:center;margin-bottom:10px">
+          <button id="tabLogin" class="btn btn-login" onclick="switchAuth('login')">Login</button>
+          <button id="tabSignup" class="btn btn-outline" onclick="switchAuth('signup')">Register</button>
+        </div>
+
+        <!-- Login -->
+        <form id="loginForm" class="form" onsubmit="event.preventDefault(); doLogin()">
+          <label>NIK</label><input id="nik" maxlength="16" inputmode="numeric" placeholder="16 digit NIK" required>
+          <label>NIP</label><input id="nip" inputmode="numeric" placeholder="NIP Karyawan RSBM" required>
+          <button class="btn btn-login" type="submit">Masuk</button>
+          <div class="badge info" style="margin-top:6px">Gunakan NIK &amp; NIP terdaftar</div>
+        </form>
+
+        <!-- Signup -->
+        <form id="signupForm" class="form hidden" onsubmit="event.preventDefault(); doSignup()">
+          <div class="grid2">
+            <div><label>NIK</label><input id="snik" maxlength="16" inputmode="numeric" required></div>
+            <div><label>NIP</label><input id="snip" inputmode="numeric" required></div>
+          </div>
+          <div class="grid2">
+            <div><label>Nama Lengkap</label><input id="sname" required></div>
+            <div><label>Nomor HP</label><input id="sphone" placeholder="62812xxxxxxx" inputmode="numeric" required></div>
+          </div>
+          <div class="grid2">
+            <button class="btn btn-outline" type="button" onclick="switchAuth('login')">Batal</button>
+            <button class="btn" type="submit">Daftar</button>
+          </div>
+          <div class="badge warn" style="margin-top:6px">Satu NIK hanya untuk satu akun</div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ========== APP ========== -->
+    <section id="app" class="view fade-in">
+      <div class="topbar">
+        <div class="top-bg">
+          <div class="logo"><img src="assets/LOGO.png" alt="KOPBAM"><b>KOPBAM</b></div>
+          <div class="period">Periode: <b id="period">2025</b></div>
+        </div>
+      </div>
+
+      <!-- HOME -->
+      <section id="home">
+        <div class="card">
+          <div class="muted">Limit Tersedia</div>
+          <div class="big" id="limitText">Belum ditetapkan</div>
+          <div class="muted" id="limitNote" style="margin-top:6px">Limit ditentukan oleh admin koperasi.</div>
+        </div>
+
+        <div class="card">
+          <div class="muted">Status Pengajuan</div>
+          <div style="margin-top:6px"><span id="statusBadge" class="badge warn">Belum diajukan</span></div>
+          <div id="homeActions" style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap">
+            <button id="applyBtn" class="btn" onclick="applyNow()">Ajukan Pinjaman</button>
+            <button class="btn" style="--c1:#20E3B2;--c2:#10B981" onclick="refreshStatus()">Perbarui Status</button>
+          </div>
+          <div id="blockNote" class="muted" style="display:none;margin-top:8px">Kamu memiliki pinjaman aktif. Ajukan lagi setelah pinjaman <b>lunas</b> atau <b>ditolak</b>.</div>
+
+          <!-- muncul hanya jika sudah disetujui/dicairkan/lunas -->
+          <div id="approvedWrap" style="display:none;margin-top:12px">
+            <div style="display:flex;justify-content:space-between;align-items:center;border:1px solid #E2ECF6;border-radius:14px;padding:12px;background:linear-gradient(180deg,#FFFFFF,#F8FBFF)">
+              <div>
+                <div class="muted">Jumlah Disetujui</div>
+                <div class="big" id="approvedAmt">Rp 0</div>
+              </div>
+              <span class="badge success">Keputusan Admin</span>
+            </div>
+            <div class="card" style="margin:10px 0 0">
+              <div class="muted">Pencairan</div>
+              <p style="margin:6px 0 0">Pencairan dilakukan <b>di Kantor Koperasi</b>. Tidak ada pencairan online.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- CICILAN (muncul setelah dicairkan/lunas) -->
+        <div id="installmentsWrap" class="card" style="display:none">
+          <div style="font-weight:900">Cicilan</div>
+          <p class="muted" style="margin:6px 0">Pembayaran dilakukan di kantor. Halaman ini menampilkan jadwal & status saja.</p>
+          <div id="installments" style="display:grid;gap:8px"></div>
+        </div>
+      </section>
+
+      <!-- LOANS -->
+      <section id="loans" class="hidden">
+        <div class="card"><div style="font-weight:900">Daftar Pinjaman</div>
+          <p class="muted">Riwayat pengajuan & status.</p>
+          <div id="loansList" style="display:grid;gap:10px"></div>
+        </div>
+      </section>
+
+      <!-- ACCOUNT -->
+      <section id="account" class="hidden">
+        <div class="card">
+          <div style="font-weight:900">Akun</div>
+          <p class="muted">Nama: <b id="empName">-</b><br>NIK/NIP disembunyikan.</p>
+        </div>
+      </section>
+
+      <!-- SETTINGS -->
+      <section id="settings" class="hidden">
+        <div class="card"><div style="font-weight:900">Pengaturan</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;border:1px solid #E2ECF6;border-radius:14px;padding:12px;background:linear-gradient(180deg,#FFFFFF,#F8FBFF);margin-top:8px"><span class="muted">Notifikasi</span><span class="badge success">Aktif</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;border:1px solid #E2ECF6;border-radius:14px;padding:12px;background:linear-gradient(180deg,#FFFFFF,#F8FBFF);margin-top:8px"><span class="muted">Sesi</span><button class="btn btn-outline" onclick="logout()">Keluar</button></div>
+        </div>
+      </section>
+
+      <!-- INBOX -->
+      <section id="inbox" class="hidden">
+        <div class="card"><div style="font-weight:900">Inbox</div><p class="muted">Notifikasi dari koperasi akan tampil di sini.</p></div>
+      </section>
+    </section>
+  </div>
+
+  <!-- Bottom Nav -->
+  <div id="bottomNav" class="bottom hidden">
+    <div class="tabs-bottom">
+      <div class="btab active" data-tab="home" onclick="switchTab('home',this)"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><small>Utama</small></div>
+      <div class="btab" data-tab="loans" onclick="switchTab('loans',this)"><svg viewBox="0 0 24 24"><path d="M3 6h18v12H3zM3 10h18"/></svg><small>Pinjaman</small></div>
+      <div class="btab" data-tab="account" onclick="switchTab('account',this)"><svg viewBox="0 0 24 24"><path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-3.31 0-10 1.66-10 5v3h20v-3c0-3.34-6.69-5-10-5z"/></svg><small>Akun</small></div>
+      <div class="btab" data-tab="settings" onclick="switchTab('settings',this)"><svg viewBox="0 0 24 24"><path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm8.94 4.66-1.22-.7a7.94 7.94 0 0 0 0-1.92l1.22-.7a.5.5 0 0 0 .18-.68l-1.5-2.6a.5.5 0 0 0-.65-.2l-1.2.48a8.1 8.1 0 0 0-1.65-.96l-.18-1.28A.5.5 0 0 0 14.5 2h-3a.5.5 0 0 0-.5.42l-.18 1.28c-.59-.24-1.14-.57-1.65-.96l-1.2.48a.5.5 0 0 0-.65.2l-1.5 2.6a.5.5 0 0 0-.18.68Z"/></svg><small>Pengaturan</small></div>
+      <div class="btab" data-tab="inbox" onclick="switchTab('inbox',this)"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/></svg><small>Inbox</small></div>
+    </div>
+  </div>
+
+  <script>
+    /* ================== DEMO STORAGE (localStorage) ================== */
+    function load(key, def){ try{ return JSON.parse(localStorage.getItem(key)) ?? def; }catch(e){return def;} }
+    function save(key, val){ localStorage.setItem(key, JSON.stringify(val)); }
+
+    // Seed user demo
+    (function seed(){
+      if(!load('kbm_users', null)){
+        save('kbm_users', [
+          {nik:'3276010101010001', nip:'1001', nama:'Andi Demo', phone:'62812xxxxxxx', aktif:true, limit:null}
+        ]);
+      }
+      if(!load('kbm_apps', null)){ save('kbm_apps', []); }
+    })();
+
+    /* ================== STATE & HELPERS ================== */
+    const state={ name:'Karyawan', period:String(new Date().getFullYear()), status:'belum', approvedAmount:0, installments:[], limit:null };
+    const idr=n=>new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(n);
+
+    const appView=document.getElementById('app');
+    const authView=document.getElementById('auth');
+    const bottomNav=document.getElementById('bottomNav');
+
+    window.addEventListener('load',()=>{ localStorage.getItem('kbm_auth')==='1'? goApp() : goAuth(); });
+
+    function goApp(){
+      authView.classList.remove('active'); authView.classList.add('hidden');
+      appView.classList.add('active'); appView.classList.remove('hidden');
+      bottomNav.classList.remove('hidden');
+
+      state.name = localStorage.getItem('kbm_name') || 'Karyawan';
+      document.getElementById('empName').textContent = state.name;
+      document.getElementById('period').textContent = state.period;
+
+      renderLimit();
+      switchTab('home', document.querySelector('.btab[data-tab="home"]'));
+      refreshStatus();
+      renderLoans();
+    }
+    function goAuth(){
+      appView.classList.remove('active'); appView.classList.add('hidden');
+      authView.classList.add('active'); authView.classList.remove('hidden');
+      bottomNav.classList.add('hidden');
+    }
+
+    function switchAuth(tab){
+      const L=document.getElementById('loginForm');
+      const S=document.getElementById('signupForm');
+      const tL=document.getElementById('tabLogin');
+      const tS=document.getElementById('tabSignup');
+      if(tab==='signup'){ S.classList.remove('hidden'); L.classList.add('hidden'); tS.classList.remove('btn-outline'); tS.classList.add('btn-login'); tL.classList.remove('btn-login'); tL.classList.add('btn-outline'); }
+      else { S.classList.add('hidden'); L.classList.remove('hidden'); tL.classList.remove('btn-outline'); tL.classList.add('btn-login'); tS.classList.remove('btn-login'); tS.classList.add('btn-outline'); }
+    }
+
+    function logout(){ localStorage.removeItem('kbm_auth'); localStorage.removeItem('kbm_name'); localStorage.removeItem('kbm_nik'); goAuth(); }
+
+    function switchTab(id,el){
+      ['home','loans','account','settings','inbox'].forEach(s=>document.getElementById(s).classList.add('hidden'));
+      document.getElementById(id).classList.remove('hidden');
+      document.querySelectorAll('.btab').forEach(t=>t.classList.remove('active'));
+      if(el) el.classList.add('active');
+    }
+
+    /* ================== AUTH (DEMO) ================== */
+    async function doSignup(){
+      const nik=document.getElementById('snik').value.trim();
+      const nip=document.getElementById('snip').value.trim();
+      const nama=document.getElementById('sname').value.trim();
+      const phone=document.getElementById('sphone').value.trim();
+
+      if(!/^\d{16}$/.test(nik)) return alert('NIK harus 16 digit.');
+      if(!nik||!nip||!nama||!phone) return alert('Lengkapi semua data.');
+
+      const users = load('kbm_users', []);
+      if(users.some(u=>u.nik===nik)) return alert('NIK sudah terdaftar. Silakan login.');
+      users.push({nik,nip,nama,phone,aktif:true,limit:null}); // limit ditentukan admin
+      save('kbm_users', users);
+
+      alert('Pendaftaran berhasil (DEMO). Silakan login.');
+      switchAuth('login');
+    }
+
+    async function doLogin(){
+      const nik=document.getElementById('nik').value.trim();
+      const nip=document.getElementById('nip').value.trim();
+      const users = load('kbm_users', []);
+      const u = users.find(x=>x.nik===nik && x.nip===nip && x.aktif!==false);
+      if(!u) return alert('Akun tidak ditemukan / tidak aktif.');
+
+      localStorage.setItem('kbm_auth','1');
+      localStorage.setItem('kbm_name', u.nama || 'Karyawan');
+      localStorage.setItem('kbm_nik',  u.nik);
+
+      state.limit = u.limit ?? null; // jika admin belum tetapkan, tetap null
+      goApp();
+    }
+
+    /* ================== RULE: SATU PINJAMAN AKTIF SAJA ================== */
+    function hasActiveLoan(nik){
+      // aktif = menunggu | verifikasi | disetujui | dicairkan
+      const activeSet = new Set(['menunggu','verifikasi','disetujui','dicairkan']);
+      const apps = load('kbm_apps', []).filter(a=>a.nik===nik);
+      return apps.some(a=>{
+        const s = String(a.status_admin || a.status_auto || '').toLowerCase();
+        return activeSet.has(s);
+      });
+    }
+
+    /* ================== HOME (DEMO) ================== */
+    function renderLimit(){
+      const el=document.getElementById('limitText');
+      const note=document.getElementById('limitNote');
+      if(state.limit && Number(state.limit)>0){
+        el.textContent = idr(Number(state.limit));
+        note.textContent = 'Limit ditentukan oleh admin koperasi.';
+      }else{
+        el.textContent = 'Belum ditetapkan';
+        note.textContent = 'Limit akan muncul setelah ditentukan admin.';
+      }
+    }
+
+    async function applyNow(){
+      const nik = localStorage.getItem('kbm_nik'); if(!nik) return alert('Belum login.');
+
+      // hard rule: hanya 1 pinjaman aktif pada satu waktu
+      if(hasActiveLoan(nik)){
+        alert('Tidak bisa mengajukan. Masih ada pinjaman aktif (belum lunas).');
+        return;
+      }
+
+      // jika tidak ada pinjaman aktif, buat pengajuan baru (tanpa jumlah; admin yang tetapkan)
+      const apps = load('kbm_apps', []);
+      apps.push({ts:Date.now(), nik, period: state.period, status_auto:'menunggu', status_admin:'', approved:0});
+      save('kbm_apps', apps);
+
+      state.status='menunggu';
+      updateStatus();
+      renderLoans();
+      alert('Pengajuan terkirim. Menunggu verifikasi admin.');
+    }
+
+    async function refreshStatus(){
+      const nik = localStorage.getItem('kbm_nik'); if(!nik) return;
+      const appsAll = load('kbm_apps', []).filter(a=>a.nik===nik).sort((a,b)=>a.ts-b.ts);
+      if(!appsAll.length){ state.status='belum'; updateStatus(); renderLoans(); return; }
+
+      // ambil aplikasi terakhir (terbaru) sebagai status berjalan
+      const last = appsAll[appsAll.length-1];
+      const final = (last.status_admin || last.status_auto || 'menunggu').toLowerCase();
+      state.status = final;
+      state.approvedAmount = Number(last.approved||0);
+
+      if(final==='dicairkan' && state.approvedAmount>0){
+        // contoh jadwal cicilan dummy 12x
+        const tenor = 12, perBulan = Math.round(state.approvedAmount/tenor);
+        state.installments = [...Array(tenor)].map((_,k)=>({
+          bulan:k+1, jatuh:`${new Date().getFullYear()}-${String(k+1).padStart(2,'0')}-10`,
+          jumlah:perBulan, status:k<1?'lunas':'belum'
+        }));
+      } else {
+        state.installments = [];
+      }
+      updateStatus();
+      renderLoans();
+    }
+
+    function updateStatus(){
+      const badge=document.getElementById('statusBadge');
+      const approvedWrap=document.getElementById('approvedWrap');
+      const instWrap=document.getElementById('installmentsWrap');
+      const applyBtn=document.getElementById('applyBtn');
+      const blockNote=document.getElementById('blockNote');
+
+      const map = {
+        'belum':['warn','Belum diajukan'],
+        'menunggu':['info','Menunggu verifikasi'],
+        'verifikasi':['info','Verifikasi Admin'],
+        'disetujui':['success','Disetujui'],
+        'dicairkan':['success','Dicairkan'],
+        'ditolak':['warn','Ditolak'],
+        'lunas':['success','Lunas']
+      };
+      const [cls, text] = map[state.status] || ['warn','Belum diajukan'];
+      badge.className = 'badge ' + cls; badge.textContent = text;
+
+      const nik = localStorage.getItem('kbm_nik') || '';
+      const blocked = hasActiveLoan(nik);
+      applyBtn.disabled = blocked;
+      blockNote.style.display = blocked ? 'block' : 'none';
+
+      if(['disetujui','dicairkan','lunas'].includes(state.status) && state.approvedAmount>0){
+        approvedWrap.style.display='block';
+        document.getElementById('approvedAmt').textContent = idr(state.approvedAmount);
+      } else {
+        approvedWrap.style.display='none';
+      }
+
+      if(['dicairkan','lunas'].includes(state.status) && (state.installments||[]).length){
+        renderInstallments(state.status==='lunas');
+        instWrap.style.display='block';
+      } else {
+        instWrap.style.display='none';
+      }
+    }
+
+    function renderInstallments(allPaid=false){
+      const wrap=document.getElementById('installments'); wrap.innerHTML='';
+      (state.installments||[]).forEach(it=>{
+        const paid=allPaid||it.status==='lunas';
+        const div=document.createElement('div');
+        div.className='fade-in';
+        div.style.cssText='display:flex;justify-content:space-between;align-items:center;border:1px solid #E2ECF6;border-radius:14px;padding:12px;background:linear-gradient(180deg,#FFFFFF,#F8FBFF)';
+        div.innerHTML=`<div><div style="font-weight:800">Cicilan #${it.bulan}</div><div class="muted">Jatuh tempo ${it.jatuh}</div></div>
+                       <div style="text-align:right"><div style="font-weight:900">${idr(it.jumlah)}</div>
+                       <span class="badge ${paid?'success':'warn'}">${paid?'Lunas':'Belum'}</span></div>`;
+        wrap.appendChild(div);
+      });
+    }
+
+    function renderLoans(){
+      const nik = localStorage.getItem('kbm_nik'); if(!nik) return;
+      const list = document.getElementById('loansList'); list.innerHTML='';
+      const rows = load('kbm_apps', []).filter(a=>a.nik===nik).sort((a,b)=>b.ts-a.ts);
+      rows.forEach(a=>{
+        const status = (a.status_admin || a.status_auto || 'menunggu').toLowerCase();
+        const badge = status==='disetujui'||status==='dicairkan'||status==='lunas' ? 'success' : (status==='ditolak'?'warn':'info');
+        const card=document.createElement('div');
+        card.className='fade-in';
+        card.style.cssText='display:flex;justify-content:space-between;align-items:center;border:1px solid #E2ECF6;border-radius:14px;padding:12px;background:linear-gradient(180deg,#FFFFFF,#F8FBFF)';
+        const waktu = new Date(a.ts).toLocaleString('id-ID',{dateStyle:'medium', timeStyle:'short'});
+        const approved = a.approved? `<div class="muted">Disetujui: <b>${idr(a.approved)}</b></div>` : '';
+        card.innerHTML = `<div><div style="font-weight:800">Pengajuan ${new Date(a.ts).getFullYear()}</div><div class="muted">${waktu}</div>${approved}</div><span class="badge ${badge}">${status}</span>`;
+        list.appendChild(card);
+      });
+    }
+
+    /* ================== ADMIN DEMO HOOKS (opsional) ==================
+       Buka DevTools Console dan panggil:
+       demoAdmin({ limit: 20000000 })                       -> set limit user aktif
+       demoAdmin({ status:'verifikasi' })                   -> ubah status aplikasi terakhir
+       demoAdmin({ status:'disetujui', approved:12000000 }) -> tetapkan jumlah disetujui
+       demoAdmin({ status:'dicairkan', approved:12000000 }) -> simulasi pencairan
+       demoAdmin({ status:'ditolak' })                      -> pinjaman dianggap tidak aktif (boleh ajukan lagi)
+       demoAdmin({ status:'lunas' })                        -> pinjaman selesai (boleh ajukan lagi)
+    */
+    window.demoAdmin = function(opts={}){
+      const nik = localStorage.getItem('kbm_nik'); if(!nik){ alert('Login dulu'); return; }
+      const users = load('kbm_users', []);
+      const u = users.find(x=>x.nik===nik);
+      if(!u) return;
+
+      if('limit' in opts){ u.limit = Number(opts.limit)||null; save('kbm_users', users); state.limit=u.limit; renderLimit(); }
+
+      if(opts.status){
+        const apps = load('kbm_apps', []);
+        let app = apps.filter(a=>a.nik===nik).sort((a,b)=>a.ts-b.ts).pop();
+        if(!app){ app = {ts:Date.now(), nik, period:state.period, status_auto:'menunggu', status_admin:'', approved:0}; apps.push(app); }
+        app.status_admin = String(opts.status).toLowerCase();
+        if('approved' in opts) app.approved = Number(opts.approved)||0;
+        save('kbm_apps', apps);
+        refreshStatus();
+      }
+      renderLoans();
+    };
+  </script>
+</body>
+</html>
