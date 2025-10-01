@@ -3,429 +3,379 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-<title>KOPBAM • Demo Fintech (Final)</title>
+<title>KOPBAM • Demo</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --blue:#0EA5E9; --blue2:#22D3EE; --ink:#0B1424;
-    --text:#F2FAFF; --muted:#BFE6FF;
-    --bg:#081320; --line:rgba(255,255,255,.18);
-    --accent:#10B981; --warn:#F59E0B; --danger:#EF4444;
-    --radius:18px; --shadow:0 30px 80px rgba(0,0,0,.45);
+    --blue:#0EA5E9; --blue2:#22D3EE; --blue3:#1D4ED8;
+    --ink:#0F172A; --text:#0B1220; --muted:#5B7BA0;
+    --white:#ffffff; --line:#DDE8F5; --chip:#E8F3FF;
+    --ok:#10B981; --warn:#F59E0B; --bad:#EF4444;
+    --radius:18px; --radius-md:14px; --radius-lg:22px;
   }
   *{box-sizing:border-box}
   html,body{height:100%}
   body{
-    margin:0; font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif; color:var(--text); background:var(--bg);
-    -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+    margin:0; font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif; color:var(--text);
+    background: linear-gradient(180deg, #E6F4FF 0%, #CDEBFF 45%, #BFE6FF 100%);
+    min-height:100dvh;
   }
-  .app{width:min(480px,100%); margin:0 auto; padding-bottom:96px}
+  .bg-wrap{position:fixed; inset:0; z-index:-1; overflow:hidden}
+  .bg-blob{position:absolute; width:120vmax; height:120vmax; left:50%; top:0; transform:translateX(-50%); filter:blur(60px); opacity:.55}
+  .b1{background:radial-gradient(closest-side at 40% 20%, #9EE8FF, transparent 60%)}
+  .b2{background:radial-gradient(closest-side at 70% 0%, #A4D8FF, transparent 60%)}
+  .b3{background:radial-gradient(closest-side at 30% 0%, #B0F1FF, transparent 60%)}
+  .app{width:min(520px,100%); margin:0 auto; padding:0 14px 100px}
 
-  /* Top appbar gradien */
-  .appbar{
-    position:sticky; top:0; z-index:5;
-    background: linear-gradient(135deg, #0EA5E9 0%, #22D3EE 60%, #67E8F9 100%);
-    color:#02283A; box-shadow:var(--shadow); border-bottom:1px solid rgba(255,255,255,.25);
-  }
-  .appbar-inner{display:flex; align-items:center; justify-content:space-between; padding:14px 14px}
-  .brand{display:flex; gap:10px; align-items:center; font-weight:900; letter-spacing:.3px; color:#042033}
-  .brand img{height:28px; filter:drop-shadow(0 6px 14px rgba(255,255,255,.35))}
-  .period{font-weight:800; background:rgba(255,255,255,.35); padding:6px 10px; border-radius:999px; color:#05283B}
+  /* Logo */
+  .logo{width:28px; height:28px; object-fit:contain; border-radius:8px; display:block}
+  .logo-xl{width:64px; height:64px; object-fit:contain; border-radius:14px; display:block}
 
-  /* HERO (gelap transparan) */
-  .hero{
-    position:relative; margin:12px; border-radius:22px; padding:18px; overflow:hidden;
-    background:rgba(0,0,0,.55);
-    border:1px solid rgba(255,255,255,.12);
-    color:#ffffff;
-    box-shadow:0 30px 60px rgba(0,0,0,.5);
-    backdrop-filter: blur(14px);
-  }
-  .hero .row{display:flex; justify-content:space-between; align-items:center}
-  .bal-title{font-weight:700; color:#EAF6FF}
-  .bal-amt{font-size:2rem; font-weight:900; letter-spacing:.2px; color:#FFFFFF}
-  .chip{display:inline-flex; gap:6px; align-items:center; padding:6px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.5); background:rgba(255,255,255,.75); font-weight:800; color:#083247}
+  /* = SPLASH = */
+  .splash{position:fixed; inset:0; display:grid; place-items:center; background:linear-gradient(135deg,#08B3FF 0%,#1AC8FF 50%,#4DDCFF 100%); z-index:99}
+  .splash-logo{display:flex; align-items:center; gap:12px; color:#fff; font-weight:900; font-size:1.1rem}
+  .fade-out{animation:fadeout .45s ease both}
+  @keyframes fadeout{to{opacity:0; visibility:hidden}}
 
-  /* Cards (gelap transparan) */
-  .card{
-    margin:12px; padding:16px; border-radius:18px;
-    background:rgba(0,0,0,.55);
-    color:#FFFFFF;
-    border:1px solid rgba(255,255,255,.12);
-    box-shadow:var(--shadow);
-    backdrop-filter: blur(14px);
-  }
-  .muted{color:#D3EDFF}
-  .title{font-weight:900; margin-bottom:8px; color:#FFFFFF}
-  .menu-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:10px}
-  .tile{
-    background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
-    border:1px solid var(--line); border-radius:16px; padding:12px; text-align:center; cursor:pointer;
-    transition:transform .06s, box-shadow .2s, outline-color .2s;
-    outline:2px solid transparent; outline-offset:2px; color:#FFFFFF;
-  }
-  .tile:hover{box-shadow:0 12px 32px rgba(14,165,233,.25); outline-color:rgba(103,232,249,.2)}
-  .tile:active{transform:translateY(1px)}
-  .ico{width:28px; height:28px; margin:0 auto 6px; display:grid; place-items:center; border-radius:12px; background:linear-gradient(135deg, #1ecbff 0%, #0ea5e9 100%); box-shadow:0 10px 22px rgba(14,165,233,.35)}
-  .ico svg{width:18px; height:18px; fill:#042838}
-  .tile small{font-weight:800; color:#FFFFFF}
+  /* = APPBAR = */
+  .appbar{position:sticky; top:0; z-index:10; background:linear-gradient(180deg,#0EB6FE 0%, #199AFF 100%); color:#fff; border-radius:0 0 14px 14px; box-shadow:0 10px 30px rgba(0,0,0,.12)}
+  .appbar-inner{display:flex; align-items:center; justify-content:space-between; padding:14px}
+  .brand{display:flex; align-items:center; gap:10px; font-weight:900}
+  .badge-pill{font-weight:800; background:rgba(255,255,255,.3); padding:6px 10px; border-radius:999px}
 
-  /* Status badge */
-  .badge{display:inline-flex; gap:6px; align-items:center; padding:6px 10px; border-radius:999px; border:1px solid var(--line); font-weight:800; color:#FFFFFF}
-  .info{background:rgba(59,130,246,.18); border-color:rgba(59,130,246,.45)}
-  .ok{background:rgba(16,185,129,.18); border-color:rgba(16,185,129,.45)}
-  .warn{background:rgba(245,158,11,.18); border-color:rgba(245,158,11,.45)}
-  .bad{background:rgba(239,68,68,.18); border-color:rgba(239,68,68,.45)}
+  /* = CARDS = */
+  .card{background:#fff; border:1px solid var(--line); border-radius:var(--radius-lg); box-shadow:0 18px 40px rgba(31,97,171,.12); padding:16px; margin:14px 0}
+  .title{font-weight:900; margin-bottom:8px}
+  .muted{color:var(--muted); font-weight:600}
 
-  /* Buttons */
-  .btn{display:inline-flex; justify-content:center; align-items:center; gap:10px; padding:13px 16px; border-radius:14px; border:1px solid rgba(255,255,255,.25);
-       background:linear-gradient(180deg, #36D1FF 0%, #0EA5E9 100%); color:#032233; font-weight:900; box-shadow:0 14px 30px rgba(14,165,233,.35); cursor:pointer; transition:transform .08s, filter .25s}
-  .btn:hover{filter:brightness(1.08)}
-  .btn:active{transform:translateY(1px)}
-  .btn-ghost{background:transparent; color:#E6F4FF; border:1px solid rgba(255,255,255,.22)}
-  .btn-ghost:hover{border-color:#7cdfff; color:#BFEFFF}
-  .btn[disabled]{opacity:.6; filter:grayscale(12%); cursor:not-allowed}
+  /* = INPUTS/BUTTONS = */
+  label{font-size:.92rem; color:#1B3C63; font-weight:700}
+  input,textarea,select{width:100%; padding:13px 14px; border-radius:14px; border:1px solid var(--line); background:#F7FBFF; color:#083356}
+  input:focus,textarea:focus,select:focus{outline:none; border-color:#9AD9FF; box-shadow:0 0 0 3px rgba(0,160,255,.15)}
+  .btn{display:inline-flex; align-items:center; justify-content:center; gap:10px; padding:13px 16px; border-radius:999px; border:1px solid rgba(0,0,0,.04); cursor:pointer; font-weight:900}
+  .btn-primary{background:linear-gradient(180deg, #48D3FF 0%, #0EA5E9 100%); color:#05263C; box-shadow:0 12px 30px rgba(14,165,233,.35)}
+  .btn-ghost{background:#fff; color:#0F2F49; border:1px solid #D7E8F9}
+  .btn[disabled]{opacity:.55; cursor:not-allowed}
 
-  /* Inputs */
-  label{font-size:.9rem; color:#EAF6FF}
-  input,textarea,select{
-    width:100%; padding:12px; border-radius:14px; border:1px solid rgba(255,255,255,.22);
-    background:rgba(2,12,22,.55); color:#FFFFFF
-  }
-  input::placeholder,textarea::placeholder{color:#A9D7EF}
-  input:focus,textarea:focus,select:focus{outline:none; border-color:#67E8F9; box-shadow:0 0 0 3px rgba(103,232,249,.25)}
-
-  /* Avatar */
-  .avatar{width:92px; height:92px; border-radius:50%; object-fit:cover; border:2px solid #67E8F9; box-shadow:0 10px 30px rgba(34,211,238,.35)}
-  .row{display:flex; gap:12px; align-items:center; flex-wrap:wrap}
+  .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
   .grid2{display:grid; grid-template-columns:1fr 1fr; gap:10px}
   @media(max-width:460px){ .grid2{grid-template-columns:1fr} }
 
-  /* Views */
+  /* = VIEW = */
   .view{display:none} .view.active{display:block}
-  .fade{animation:fade .3s ease both} @keyframes fade{from{opacity:.0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .fade{animation:fade .25s ease both} @keyframes fade{from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none}}
 
-  /* Bottom nav */
-  .bottom{position:fixed; left:0; right:0; bottom:0; z-index:6; background:rgba(4,14,26,.92); backdrop-filter: blur(10px); border-top:1px solid var(--line)}
-  .tabs{display:grid; grid-template-columns:repeat(5,1fr); max-width:480px; margin:0 auto}
-  .tab{padding:10px 6px; text-align:center; color:#A7DFFF; font-weight:800; cursor:pointer}
-  .tab.active{color:#67E8F9}
-  .tab svg{width:22px; height:22px; fill:currentColor; display:block; margin:0 auto 4px}
+  /* = TOP MENU = */
+  .topmenu{padding:12px 14px}
+  .menu-row{display:grid; grid-template-columns:repeat(5,1fr); gap:10px}
+  .menu-item{display:flex; flex-direction:column; align-items:center; text-align:center}
+  .ico-wrap{width:52px; height:52px; border-radius:16px; background:linear-gradient(180deg,#F9FDFF 0%, #EEF7FF 100%); display:grid; place-items:center; border:1px solid #DCEBFA; box-shadow:0 10px 20px rgba(32,114,189,.12)}
+  .ico-wrap svg{width:28px; height:28px}
+  .mname{font-size:.85rem; font-weight:800; margin-top:6px; color:#0E2E4B}
 
-  /* Ticker */
-  .ticker-card{margin:12px; padding:0; border-radius:16px; background:rgba(0,0,0,.55); border:1px solid var(--line); overflow:hidden; backdrop-filter: blur(14px); color:#FFFFFF}
-  .ticker-head{display:flex; align-items:center; gap:8px; padding:10px 12px; border-bottom:1px solid var(--line); color:#DFF6FF; font-weight:800}
-  .ticker-head svg{width:16px;height:16px;fill:#8EEBFF}
-  .ticker{position:relative; white-space:nowrap; overflow:hidden; padding:8px 0; background:linear-gradient(90deg, rgba(255,255,255,.06), transparent 30%, transparent 70%, rgba(255,255,255,.06))}
-  .ticker > div{display:inline-block; padding-left:100%; animation:ticker-move 18s linear infinite; color:#FFFFFF; text-shadow:0 1px 1px rgba(0,0,0,.4)}
+  /* = HERO = */
+  .hero{position:relative; padding:18px; border-radius:22px; overflow:hidden; background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(255,255,255,.84)); border:1px solid #E6F1FC}
+  .hero .big{font-size:1.9rem; font-weight:900; color:#0A2035}
+  .chip{display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px; background:var(--chip); font-weight:800; color:#1C3B5A; border:1px solid #D8E9FF}
+
+  /* = BADGES = */
+  .badge{display:inline-flex; gap:8px; align-items:center; padding:8px 12px; border-radius:999px; font-weight:800}
+  .b-ok{background:#E6FFF6; color:#066A4C; border:1px solid #BDF0E2}
+  .b-warn{background:#FFF5E6; color:#7A4B02; border:1px solid #FFE0B0}
+  .b-info{background:#EEF7FF; color:#14446E; border:1px solid #CDE5FF}
+  .b-bad{background:#FFECEB; color:#7A1C1C; border:1px solid #FFC9C6}
+
+  /* = TICKER = */
+  .ticker-card{padding:0; overflow:hidden}
+  .ticker-head{display:flex; align-items:center; gap:8px; padding:10px 12px; border-bottom:1px solid #E6F1FC; color:#0B3B64; font-weight:900}
+  .ticker{white-space:nowrap; overflow:hidden; padding:10px 0; background:linear-gradient(90deg, rgba(0,0,0,0), rgba(0,0,0,.02) 50%, rgba(0,0,0,0))}
+  .ticker > div{display:inline-block; padding-left:100%; animation:ticker 16s linear infinite}
   .ticker:hover > div{animation-play-state:paused}
-  @keyframes ticker-move { 0% { transform: translateX(0) } 100% { transform: translateX(-100%) } }
+  @keyframes ticker { 0% { transform: translateX(0) } 100% { transform: translateX(-100%) } }
 
-  /* Background gradiasi bergerak + parallax */
-  .bg-anim{
-    position:fixed; inset:0; z-index:-1; overflow:hidden;
-    background: linear-gradient(180deg, #f4fbff 0%, #dff4ff 35%, #0b1220 100%);
-  }
-  .bg-anim .blob{
-    position:absolute; border-radius:50%;
-    filter: blur(70px); opacity:.55; will-change: transform;
-    animation: drift 22s ease-in-out infinite;
-  }
-  .bg-anim .b1{ width:60vw; height:60vw; background:#67E8F9; left:-15vw; top:-20vw; }
-  .bg-anim .b2{ width:55vw; height:55vw; background:#0EA5E9; right:-18vw; top:-10vw; animation-delay:2.5s; }
-  .bg-anim .b3{ width:70vw; height:70vw; background:#ffffff; left:10vw; bottom:-25vw; opacity:.35; animation-delay:5s; }
-  @keyframes drift{
-    0%   { transform: translate3d(0,0,0) scale(1); }
-    25%  { transform: translate3d(4vw,-2vw,0) scale(1.04); }
-    50%  { transform: translate3d(0,-4vw,0) scale(1.07); }
-    75%  { transform: translate3d(-3vw,-2vw,0) scale(1.03); }
-    100% { transform: translate3d(0,0,0) scale(1); }
-  }
-  @media (prefers-reduced-motion: reduce){
-    .bg-anim .blob{ animation:none }
-  }
+  /* = FOOTER KECIL = */
+  .foot{margin:18px 0 8px; text-align:center; color:#6A88AA; font-weight:700; font-size:.86rem}
 </style>
 </head>
 <body>
-  <!-- Background gradiasi bergerak + parallax -->
-  <div class="bg-anim" aria-hidden="true">
-    <span class="blob b1"></span>
-    <span class="blob b2"></span>
-    <span class="blob b3"></span>
-  </div>
 
-  <div class="app">
-    <!-- AUTH -->
-    <section id="auth" class="view active fade">
-      <div class="appbar">
-        <div class="appbar-inner">
-          <div class="brand"><img src="assets/LOGO.png" alt="KOPBAM" loading="lazy"><span style="font-weight:900">KOPBAM</span></div>
-          <div class="period">Portal Karyawan</div>
+<!-- BG parallax -->
+<div class="bg-wrap">
+  <div class="bg-blob b1"></div>
+  <div class="bg-blob b2"></div>
+  <div class="bg-blob b3"></div>
+</div>
+
+<!-- SPLASH pakai logo dari assets -->
+<div id="splash" class="splash">
+  <div class="splash-logo">
+    <img class="logo-xl" src="assets/LOGO.png" alt="KOPBAM" loading="eager">
+    KOPBAM
+  </div>
+</div>
+
+<div class="app">
+
+  <!-- ===== LOGIN / REGISTER ===== -->
+  <section id="auth" class="view active fade">
+    <div class="appbar">
+      <div class="appbar-inner">
+        <div class="brand">
+          <img class="logo" src="assets/LOGO.png" alt="KOPBAM" loading="eager">
+          KOPBAM
+        </div>
+        <div class="badge-pill">Portal Karyawan</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="title">Masuk dengan NIK & NIP</div>
+      <form id="formLogin" onsubmit="event.preventDefault(); doLogin()">
+        <label>NIK</label>
+        <input id="nik" maxlength="16" inputmode="numeric" placeholder="16 digit NIK" required>
+        <label style="margin-top:8px">NIP</label>
+        <input id="nip" inputmode="numeric" placeholder="NIP Karyawan RSBM" required>
+        <div class="row" style="margin-top:12px">
+          <button class="btn btn-primary" type="submit">Masuk</button>
+          <button class="btn btn-ghost" type="button" onclick="switchAuth('reg')">Buat akun</button>
+        </div>
+      </form>
+
+      <form id="formReg" style="display:none" onsubmit="event.preventDefault(); doSignup()">
+        <div class="title" style="margin-top:10px">Daftar Akun</div>
+        <label>NIK</label><input id="r_nik" maxlength="16" inputmode="numeric" required>
+        <label style="margin-top:8px">NIP</label><input id="r_nip" inputmode="numeric" required>
+        <label style="margin-top:8px">Nama Lengkap</label><input id="r_nama" required>
+        <label style="margin-top:8px">Nomor HP</label><input id="r_hp" inputmode="numeric" placeholder="62xxxxxxxxx" required>
+        <div class="row" style="margin-top:12px">
+          <button class="btn btn-ghost" type="button" onclick="switchAuth('login')">Batal</button>
+          <button class="btn btn-primary" type="submit">Daftar</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- ===== APP VIEW ===== -->
+  <section id="appView" class="view">
+
+    <!-- Appbar Dashboard -->
+    <div class="appbar">
+      <div class="appbar-inner">
+        <div class="brand">
+          <img class="logo" src="assets/LOGO.png" alt="KOPBAM" loading="eager">
+          KOPBAM
+        </div>
+        <div class="badge-pill">Periode <span id="period">2025</span></div>
+      </div>
+
+      <!-- Top menu -->
+      <div class="topmenu">
+        <div class="menu-row">
+          <div class="menu-item" onclick="switchTab('home')">
+            <div class="ico-wrap" title="Beranda">
+              <svg viewBox="0 0 24 24" fill="#1E90FF"><path d="M12 3 2 12h3v9h6v-6h2v6h6v-9h3z"/></svg>
+            </div>
+            <div class="mname">Home</div>
+          </div>
+          <div class="menu-item" onclick="switchTab('loans')">
+            <div class="ico-wrap" title="Pinjaman">
+              <svg viewBox="0 0 24 24" fill="#0EA5E9"><path d="M3 6h18v12H3zM3 10h18"/></svg>
+            </div>
+            <div class="mname">Pinjaman</div>
+          </div>
+          <div class="menu-item" onclick="switchTab('account')">
+            <div class="ico-wrap" title="Akun">
+              <svg viewBox="0 0 24 24" fill="#34C759"><path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-4 0-8 2-8 5v3h16v-3c0-3-4-5-8-5Z"/></svg>
+            </div>
+            <div class="mname">Akun</div>
+          </div>
+          <div class="menu-item" onclick="switchTab('settings')">
+            <div class="ico-wrap" title="Pengaturan">
+              <svg viewBox="0 0 24 24" fill="#FF9F0A"><path d="M12 8a4 4 0 1 0 4 4 4.005 4.005 0 0 0-4-4Zm8.94 4.66-1.22-.7a7.94 7.94 0 0 0 0-1.92l1.22-.7a.5.5 0 0 0 .18-.68l-1.5-2.6a.5.5 0 0 0-.65-.2l-1.2.48A8.1 8.1 0 0 0 16.6 4l-.18-1.28A.5.5 0 0 0 15.93 2h-7.9a.5.5 0 0 0-.49.42L6.36 3.7a8.1 8.1 0 0 0-1.65.96l-1.2-.48a.5.5 0 0 0-.65.2L1.36 6.98a.5.5 0 0 0 .18.68l1.22.7a7.94 7.94 0 0 0 0 1.92l-1.22.7a.5.5 0 0 0-.18.68l1.5 2.6a.5.5 0 0 0 .65.2l1.2-.48a8.1 8.1 0 0 0 1.65.96l.18 1.28a.5.5 0 0 0 .49.42h7.9a.5.5 0 0 0 .49-.42L16.6 20.3a8.1 8.1 0 0 0 1.65-.96l1.2.48a.5.5 0 0 0 .65-.2l1.5-2.6a.5.5 0 0 0-.18-.68Z"/></svg>
+            </div>
+            <div class="mname">Pengaturan</div>
+          </div>
+          <div class="menu-item" onclick="switchTab('inbox')">
+            <div class="ico-wrap" title="Inbox">
+              <svg viewBox="0 0 24 24" fill="#FF3B30"><path d="M20 4H4a2 2 0 0 0-2 2v1l10 6 10-6V6a2 2 0 0 0-2-2Z"/><path d="M22 8l-10 6L2 8v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2Z"/></svg>
+            </div>
+            <div class="mname">Inbox</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== HOME ===== -->
+    <section id="home" class="view active fade">
+      <div class="card hero">
+        <div class="row" style="justify-content:space-between">
+          <div>
+            <div class="muted">Limit Tersedia</div>
+            <div id="limitText" class="big">Belum ditetapkan</div>
+          </div>
+          <div id="statusChip" class="chip">Menunggu verifikasi</div>
+        </div>
+        <div class="row" style="margin-top:12px">
+          <button id="btnApply" class="btn btn-primary" onclick="applyNow()">Ajukan Pinjaman</button>
+          <button class="btn btn-ghost" onclick="refreshStatus()">Perbarui</button>
+        </div>
+        <div id="blockNote" class="muted" style="display:none; margin-top:8px">
+          Ada pinjaman aktif. Ajukan lagi jika <b>lunas</b> atau <b>ditolak</b>.
         </div>
       </div>
 
-      <div class="hero" role="region" aria-label="Masuk">
-        <div class="row">
-          <div>
-            <div class="bal-title">Masuk dengan NIK & NIP</div>
-            <div style="margin-top:6px" class="chip">RS Banua Mamase</div>
-          </div>
-          <div class="chip">Aman & Terenkripsi</div>
+      <div class="card ticker-card">
+        <div class="ticker-head">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="#0EA5E9"><path d="M3 11h14l4-4v10l-4-4H3z"/></svg>
+          PENGUMUMAN
         </div>
+        <div class="ticker"><div id="tickerText">Loading…</div></div>
       </div>
 
       <div class="card">
-        <div class="row" style="justify-content:center; gap:10px; margin-bottom:12px">
-          <button id="btnTabLogin" class="btn" onclick="switchAuth('login')">Login</button>
-          <button id="btnTabReg" class="btn btn-ghost" onclick="switchAuth('reg')">Register</button>
-        </div>
-
-        <form id="formLogin" onsubmit="event.preventDefault(); doLogin()" aria-label="Form Login">
-          <label for="nik">NIK</label>
-          <input id="nik" maxlength="16" inputmode="numeric" placeholder="16 digit NIK" required>
-          <label for="nip">NIP</label>
-          <input id="nip" inputmode="numeric" placeholder="NIP Karyawan RSBM" required>
-          <div class="row" style="justify-content:space-between; margin-top:10px">
-            <button class="btn" type="submit">Masuk</button>
-            <button class="btn btn-ghost" type="button" onclick="switchAuth('reg')">Daftar</button>
+        <div class="title">Status Pengajuan</div>
+        <div id="statusBadge" class="badge b-warn">Belum diajukan</div>
+        <div id="approvedWrap" style="display:none; margin-top:12px">
+          <div class="row" style="justify-content:space-between; width:100%; background:#F7FBFF; border:1px solid #E6F1FC; border-radius:14px; padding:12px">
+            <div>
+              <div class="muted">Jumlah Disetujui</div>
+              <div id="approvedAmt" style="font-size:1.4rem; font-weight:900">Rp 0</div>
+            </div>
+            <div class="badge b-ok">Keputusan Admin</div>
           </div>
-        </form>
-
-        <form id="formReg" class="fade" style="display:none" onsubmit="event.preventDefault(); doSignup()" aria-label="Form Register">
-          <label for="r_nik">NIK</label><input id="r_nik" maxlength="16" inputmode="numeric" required>
-          <label for="r_nip">NIP</label><input id="r_nip" inputmode="numeric" required>
-          <label for="r_nama">Nama Lengkap</label><input id="r_nama" required>
-          <label for="r_hp">Nomor HP</label><input id="r_hp" inputmode="numeric" placeholder="62xxxxxxxxx" required>
-          <div class="row" style="justify-content:space-between; margin-top:10px">
-            <button class="btn btn-ghost" type="button" onclick="switchAuth('login')">Batal</button>
-            <button class="btn" type="submit">Buat Akun</button>
-          </div>
-        </form>
-      </div>
-    </section>
-
-    <!-- APP -->
-    <section id="appView" class="view fade" aria-live="polite">
-      <div class="appbar">
-        <div class="appbar-inner">
-          <div class="brand"><img src="assets/LOGO.png" alt="KOPBAM" loading="lazy"><span style="font-weight:900">KOPBAM</span></div>
-          <div class="period">Periode <span id="period">2025</span></div>
+          <div style="margin-top:10px" class="muted">Pencairan hanya di <b>Kantor Koperasi</b> (tidak online).</div>
         </div>
       </div>
 
-      <!-- HOME -->
-      <section id="home" class="view active fade">
-        <div class="hero">
-          <div class="row">
-            <div>
-              <div class="bal-title">Limit Tersedia</div>
-              <div id="limitText" class="bal-amt">Belum ditetapkan</div>
-            </div>
-            <div class="chip" id="statusChip" title="Status pengajuan">Status</div>
-          </div>
-          <div class="row" style="margin-top:12px">
-            <button id="btnApply" class="btn" onclick="applyNow()">
-              <svg viewBox="0 0 24 24" width="18" height="18" style="fill:#032233"><path d="M12 5v14m-7-7h14"/></svg>
-              Ajukan Pinjaman
-            </button>
-            <button class="btn btn-ghost" onclick="refreshStatus()">Perbarui</button>
-          </div>
-          <div id="blockNote" class="muted" style="display:none; margin-top:8px">
-            Ada pinjaman aktif. Ajukan lagi jika <b>lunas</b> atau <b>ditolak</b>.
-          </div>
-        </div>
+      <div id="instWrap" class="card" style="display:none">
+        <div class="title">Cicilan</div>
+        <div id="instList" style="display:grid; gap:10px"></div>
+      </div>
 
-        <div class="ticker-card" role="region" aria-label="Pengumuman">
-          <div class="ticker-head">
-            <svg viewBox="0 0 24 24"><path d="M3 11h14l4-4v10l-4-4H3z"/></svg>
-            PENGUMUMAN
-          </div>
-          <div class="ticker"><div id="tickerText">Loading…</div></div>
-        </div>
-
-        <div class="card">
-          <div class="title">Menu</div>
-          <div class="menu-grid">
-            <div class="tile" onclick="switchTab('loans')" aria-label="Daftar Pinjaman">
-              <div class="ico"><svg viewBox="0 0 24 24"><path d="M3 6h18v12H3zM3 10h18"/></svg></div>
-              <small>Daftar Pinjaman</small>
-            </div>
-            <div class="tile" onclick="switchTab('account')" aria-label="Akun">
-              <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-4 0-8 2-8 5v3h16v-3c0-3-4-5-8-5Z"/></svg></div>
-              <small>Akun</small>
-            </div>
-            <div class="tile" onclick="switchTab('inbox')" aria-label="Inbox">
-              <div class="ico"><svg viewBox="0 0 24 24"><path d="M20 4H4a2 2 0 0 0-2 2v1l10 6 10-6V6a2 2 0 0 0-2-2Z"/><path d="M22 8l-10 6L2 8v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2Z"/></svg></div>
-              <small>Inbox</small>
-            </div>
-            <div class="tile" onclick="switchTab('settings')" aria-label="Pengaturan">
-              <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 8a4 4 0 1 0 4 4 4.005 4.005 0 0 0-4-4Z"/></svg></div>
-              <small>Pengaturan</small>
-            </div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="title">Status Pengajuan</div>
-          <div id="statusBadge" class="badge warn">Belum diajukan</div>
-          <div id="approvedWrap" style="display:none; margin-top:12px">
-            <div class="row" style="justify-content:space-between; width:100%; background:rgba(255,255,255,.06); border:1px solid var(--line); border-radius:14px; padding:12px">
-              <div>
-                <div class="muted">Jumlah Disetujui</div>
-                <div id="approvedAmt" style="font-size:1.4rem; font-weight:900; color:#FFFFFF">Rp 0</div>
-              </div>
-              <div class="badge ok">Keputusan Admin</div>
-            </div>
-            <div style="margin-top:10px" class="muted">Pencairan hanya di <b>Kantor Koperasi</b> (tidak online).</div>
-          </div>
-        </div>
-
-        <div id="instWrap" class="card" style="display:none">
-          <div class="title">Cicilan</div>
-          <div id="instList" style="display:grid; gap:10px"></div>
-        </div>
-      </section>
-
-      <!-- LOANS -->
-      <section id="loans" class="view fade">
-        <div class="card"><div class="title">Daftar Pengajuan</div>
-          <div id="loansList" style="display:grid; gap:10px"></div>
-        </div>
-      </section>
-
-      <!-- ACCOUNT -->
-      <section id="account" class="view fade">
-        <div class="card">
-          <div class="title">Akun Karyawan</div>
-          <div class="row">
-            <img id="avatar" class="avatar" alt="Foto Profil">
-            <div>
-              <div id="accName" style="font-weight:900; font-size:1.1rem">-</div>
-              <div id="accId" class="muted" style="font-weight:700">NIK/NIP: -</div>
-              <div class="row" style="margin-top:8px">
-                <label for="photo" class="btn btn-ghost" style="cursor:pointer">Ubah Foto</label>
-                <input id="photo" class="hidden" type="file" accept="image/*" onchange="onPhoto(event)" style="display:none">
-                <button class="btn btn-ghost" type="button" onclick="removePhoto()">Hapus Foto</button>
-              </div>
-            </div>
-          </div>
-
-          <form class="form" style="margin-top:12px" onsubmit="event.preventDefault(); saveProfile()">
-            <label>Nama Lengkap</label><input id="p_nama" required>
-            <div class="grid2">
-              <div><label>Jabatan</label><input id="p_jabatan" placeholder="Perawat / Dokter / Staff"></div>
-              <div><label>Unit / Bagian</label><input id="p_unit" placeholder="IGD / ICU / Keuangan"></div>
-            </div>
-            <div class="grid2">
-              <div><label>Tempat Lahir</label><input id="p_tempat" placeholder="Kota Kelahiran"></div>
-              <div><label>Tanggal Lahir</label><input id="p_tgl" type="date"></div>
-            </div>
-            <label>Alamat</label><textarea id="p_alamat" placeholder="Jalan, RT/RW, Kel/Desa, Kecamatan, Kota/Kab."></textarea>
-            <label>Nomor HP</label><input id="p_hp" inputmode="numeric" placeholder="62xxxxxxxxx">
-            <div class="row" style="justify-content:space-between; width:100%">
-              <button class="btn btn-ghost" type="button" onclick="switchTab('home')">Kembali</button>
-              <button class="btn" type="submit">Simpan Profil</button>
-            </div>
-            <div id="saveOk" class="muted" style="display:none; margin-top:8px">Tersimpan ✔</div>
-          </form>
-        </div>
-      </section>
-
-      <!-- SETTINGS -->
-      <section id="settings" class="view fade">
-        <div class="card">
-          <div class="title">Pengaturan</div>
-          <div class="row" style="justify-content:space-between; width:100%; background:rgba(255,255,255,.06); border:1px solid var(--line); border-radius:14px; padding:12px">
-            <div class="muted">Notifikasi</div><div class="badge ok">Aktif</div>
-          </div>
-          <div class="row" style="justify-content:space-between; width:100%; background:rgba(255,255,255,.06); border:1px solid var(--line); border-radius:14px; padding:12px; margin-top:10px">
-            <div class="muted">Sesi</div><button class="btn btn-ghost" onclick="logout()">Keluar</button>
-          </div>
-        </div>
-      </section>
-
-      <!-- INBOX -->
-      <section id="inbox" class="view fade">
-        <div class="card"><div class="title">Inbox</div><div class="muted">Notifikasi dari koperasi akan tampil di sini.</div></div>
-      </section>
+      <div class="foot">Version 1.0.0 • Crafted by Anggara Pradana</div>
     </section>
-  </div>
 
-  <!-- BOTTOM NAV -->
-  <div id="bottom" class="bottom" style="display:none">
-    <div class="tabs">
-      <div class="tab active" data-tab="home" onclick="switchTab('home',this)"><svg viewBox="0 0 24 24"><path d="M12 3 3 12h3v9h12v-9h3z"/></svg>Beranda</div>
-      <div class="tab" data-tab="loans" onclick="switchTab('loans',this)"><svg viewBox="0 0 24 24"><path d="M3 6h18v12H3zM3 10h18"/></svg>Pinjaman</div>
-      <div class="tab" data-tab="account" onclick="switchTab('account',this)"><svg viewBox="0 0 24 24"><path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-4 0-8 2-8 5v3h16v-3c0-3-4-5-8-5Z"/></svg>Akun</div>
-      <div class="tab" data-tab="settings" onclick="switchTab('settings',this)"><svg viewBox="0 0 24 24"><path d="M12 8a4 4 0 1 0 4 4 4.005 4.005 0 0 0-4-4Z"/></svg>Pengaturan</div>
-      <div class="tab" data-tab="inbox" onclick="switchTab('inbox',this)"><svg viewBox="0 0 24 24"><path d="M20 4H4a2 2 0 0 0-2 2v1l10 6 10-6V6a2 2 0 0 0-2-2Z"/><path d="M22 8l-10 6L2 8v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2Z"/></svg>Inbox</div>
-    </div>
-  </div>
+    <!-- ===== LOANS ===== -->
+    <section id="loans" class="view fade">
+      <div class="card">
+        <div class="title">Daftar Pengajuan</div>
+        <div id="loansList" style="display:grid; gap:10px"></div>
+      </div>
+      <div class="foot">Version 1.0.0 • Crafted by Anggara Pradana</div>
+    </section>
+
+    <!-- ===== ACCOUNT ===== -->
+    <section id="account" class="view fade">
+      <div class="card">
+        <div class="title">Akun Karyawan</div>
+        <div class="row">
+          <img id="avatar" alt="Foto" style="width:92px;height:92px;border-radius:50%;object-fit:cover;border:2px solid #9AD9FF;box-shadow:0 10px 30px rgba(34,211,238,.25)">
+          <div>
+            <div id="accName" style="font-weight:900; font-size:1.06rem">-</div>
+            <div id="accId" class="muted" style="font-weight:700">NIK/NIP: -</div>
+            <div class="row" style="margin-top:8px">
+              <label for="photo" class="btn btn-ghost" style="cursor:pointer">Ubah Foto</label>
+              <input id="photo" type="file" accept="image/*" onchange="onPhoto(event)" style="display:none">
+              <button class="btn btn-ghost" type="button" onclick="removePhoto()">Hapus Foto</button>
+            </div>
+          </div>
+        </div>
+
+        <form style="margin-top:12px" onsubmit="event.preventDefault(); saveProfile()">
+          <label>Nama Lengkap</label><input id="p_nama" required>
+          <div class="grid2" style="margin-top:8px">
+            <div><label>Jabatan</label><input id="p_jabatan" placeholder="Perawat / Dokter / Staff"></div>
+            <div><label>Unit / Bagian</label><input id="p_unit" placeholder="IGD / ICU / Keuangan"></div>
+          </div>
+          <div class="grid2" style="margin-top:8px">
+            <div><label>Tempat Lahir</label><input id="p_tempat" placeholder="Kota Kelahiran"></div>
+            <div><label>Tanggal Lahir</label><input id="p_tgl" type="date"></div>
+          </div>
+          <label style="margin-top:8px">Alamat</label><textarea id="p_alamat" placeholder="Jalan, RT/RW, Kel/Desa, Kecamatan, Kota/Kab."></textarea>
+          <label style="margin-top:8px">Nomor HP</label><input id="p_hp" inputmode="numeric" placeholder="62xxxxxxxxx">
+          <div class="row" style="justify-content:space-between; width:100%; margin-top:12px">
+            <button class="btn btn-ghost" type="button" onclick="switchTab('home')">Kembali</button>
+            <button class="btn btn-primary" type="submit">Simpan Profil</button>
+          </div>
+          <div id="saveOk" class="muted" style="display:none; margin-top:8px">Tersimpan ✔</div>
+        </form>
+      </div>
+      <div class="foot">Version 1.0.0 • Crafted by Anggara Pradana</div>
+    </section>
+
+    <!-- ===== SETTINGS ===== -->
+    <section id="settings" class="view fade">
+      <div class="card">
+        <div class="title">Pengaturan</div>
+        <div class="row" style="justify-content:space-between; width:100%; background:#F7FBFF; border:1px solid #E6F1FC; border-radius:14px; padding:12px">
+          <div class="muted">Notifikasi</div><div class="badge b-ok">Aktif</div>
+        </div>
+        <div class="row" style="justify-content:space-between; width:100%; background:#F7FBFF; border:1px solid #E6F1FC; border-radius:14px; padding:12px; margin-top:10px">
+          <div class="muted">Sesi</div><button class="btn btn-ghost" onclick="logout()">Keluar</button>
+        </div>
+      </div>
+      <div class="foot">Version 1.0.0 • Crafted by Anggara Pradana</div>
+    </section>
+
+    <!-- ===== INBOX ===== -->
+    <section id="inbox" class="view fade">
+      <div class="card"><div class="title">Inbox</div><div class="muted">Notifikasi dari koperasi akan tampil di sini.</div></div>
+      <div class="foot">Version 1.0.0 • Crafted by Anggara Pradana</div>
+    </section>
+
+  </section>
+</div>
 
 <script>
-/* ========= DEMO STORAGE ========= */
+/* ========= UTIL ========= */
 const load=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{ return d }}
 const save=(k,v)=>localStorage.setItem(k,JSON.stringify(v))
+const idr=n=>new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(n)
+const mask=(s,k=4)=> s ? s.slice(0,k)+'*'.repeat(Math.max(0,s.length-k-2))+s.slice(-2) : '-'
 
-// seed demo
-;(function seed(){
+/* ========= SEED DEMO ========= */
+(function seed(){
   if(!load('kbm_users',null)){
-    save('kbm_users',[
-      {nik:'3276010101010001', nip:'1001', nama:'Andi Demo', phone:'62812xxxxxxx', aktif:true, limit:null,
-       profile:{photo:'', jabatan:'Perawat', unit:'IGD', tempat:'Mamuju', tgl:'1992-06-21', alamat:'Jl. Contoh No.1'}}
-    ])
+    save('kbm_users',[{
+      nik:'3276010101010001', nip:'1001', nama:'Andi Demo', phone:'62812xxxxxxx', aktif:true, limit:null,
+      profile:{photo:'', jabatan:'Perawat', unit:'IGD', tempat:'Mamuju', tgl:'1992-06-21', alamat:'Jl. Contoh No.1'}
+    }]);
   }
-  if(!load('kbm_apps',null)) save('kbm_apps',[])
-  if(!load('kbm_news', null)){
-    save('kbm_news', [
+  if(!load('kbm_news',null)){
+    save('kbm_news',[
       "⚙️ Pemeliharaan sistem 02.00–03.00 WITA malam ini.",
       "📌 Pengajuan hanya satu kali sampai pinjaman LUNAS.",
       "💁 Pencairan hanya di kantor Koperasi (tidak online)."
     ]);
   }
+  if(!load('kbm_apps',null)) save('kbm_apps',[]);
+})();
+(function ensureDemo(){
+  const users = load('kbm_users', []);
+  if (!users.find(u => u.nik === '3276010101010001')) {
+    users.push({ nik:'3276010101010001', nip:'1001', nama:'Andi Demo', phone:'62812xxxxxxx', aktif:true, limit:null,
+      profile:{photo:'', jabatan:'Perawat', unit:'IGD', tempat:'Mamuju', tgl:'1992-06-21', alamat:'Jl. Contoh No.1'} });
+    save('kbm_users', users);
+  }
 })();
 
 /* ========= STATE ========= */
 const state={ period:String(new Date().getFullYear()), status:'belum', approved:0, limit:null, installments:[] }
-const idr=n=>new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(n)
-const mask=(s,k=4)=> s ? s.slice(0,k)+'*'.repeat(Math.max(0,s.length-k-2))+s.slice(-2) : '-'
 
-/* ========= NAV + AUTH ========= */
+/* ========= SPLASH ========= */
+window.addEventListener('load', ()=>{
+  setTimeout(()=> document.getElementById('splash').classList.add('fade-out'), 700);
+});
+
+/* ========= AUTH ========= */
 function switchAuth(mode){
   const L = document.getElementById('formLogin')
   const R = document.getElementById('formReg')
-  const bL= document.getElementById('btnTabLogin')
-  const bR= document.getElementById('btnTabReg')
-  if(mode==='reg'){ L.style.display='none'; R.style.display='block'; bL.classList.add('btn-ghost'); bR.classList.remove('btn-ghost') }
-  else { R.style.display='none'; L.style.display='block'; bR.classList.add('btn-ghost'); bL.classList.remove('btn-ghost') }
+  if(mode==='reg'){ L.style.display='none'; R.style.display='block' }
+  else { R.style.display='none'; L.style.display='block' }
 }
-window.addEventListener('load',()=>{ if(localStorage.getItem('kbm_auth')==='1'){ openApp() } })
+if(localStorage.getItem('kbm_auth')==='1'){ openApp() }
 
-function openApp(){
-  document.getElementById('auth').classList.remove('active')
-  document.getElementById('auth').style.display='none'
-  document.getElementById('appView').classList.add('active')
-  document.getElementById('bottom').style.display='block'
-  document.getElementById('period').textContent = state.period
-  renderHome(); renderLoans(); renderAccount()
-}
-
-function switchTab(id, el){
-  document.querySelectorAll('#appView > section').forEach(s=>s.classList.remove('active'))
-  document.getElementById(id).classList.add('active')
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'))
-  if(el) el.classList.add('active')
-  if(id==='home'){ renderHome() }
-  if(id==='loans'){ renderLoans() }
-  if(id==='account'){ renderAccount() }
-}
-
-function logout(){
-  localStorage.removeItem('kbm_auth'); localStorage.removeItem('kbm_nik'); localStorage.removeItem('kbm_name')
-  location.reload()
-}
-
-/* ========= AUTH ========= */
 function doSignup(){
   const nik = document.getElementById('r_nik').value.trim()
   const nip = document.getElementById('r_nip').value.trim()
@@ -450,8 +400,30 @@ function doLogin(){
   state.limit = u.limit ?? null
   openApp()
 }
+function logout(){
+  localStorage.removeItem('kbm_auth'); localStorage.removeItem('kbm_nik'); localStorage.removeItem('kbm_name')
+  location.reload()
+}
 
-/* ========= RULE: 1 pinjaman aktif ========= */
+/* ========= OPEN APP ========= */
+function openApp(){
+  document.getElementById('auth').classList.remove('active')
+  document.getElementById('auth').style.display='none'
+  document.getElementById('appView').classList.add('active')
+  document.getElementById('period').textContent = state.period
+  renderHome(); renderLoans(); renderAccount();
+}
+
+/* ========= TAB SWITCH ========= */
+function switchTab(id){
+  document.querySelectorAll('#appView > section').forEach(s=>s.classList.remove('active'))
+  document.getElementById(id).classList.add('active')
+  if(id==='home'){ renderHome() }
+  if(id==='loans'){ renderLoans() }
+  if(id==='account'){ renderAccount() }
+}
+
+/* ========= RULE ========= */
 function hasActiveLoan(nik){
   const active = new Set(['menunggu','verifikasi','disetujui','dicairkan'])
   const apps = load('kbm_apps',[]).filter(a=>a.nik===nik)
@@ -475,16 +447,16 @@ function renderHome(){
   const chip = document.getElementById('statusChip')
   const badge = document.getElementById('statusBadge')
   const map = {
-    'belum':['warn','Belum diajukan'],
-    'menunggu':['info','Menunggu verifikasi'],
-    'verifikasi':['info','Verifikasi Admin'],
-    'disetujui':['ok','Disetujui'],
-    'dicairkan':['ok','Dicairkan'],
-    'ditolak':['warn','Ditolak'],
-    'lunas':['ok','Lunas']
+    'belum':['b-warn','Belum diajukan'],
+    'menunggu':['b-info','Menunggu verifikasi'],
+    'verifikasi':['b-info','Verifikasi Admin'],
+    'disetujui':['b-ok','Disetujui'],
+    'dicairkan':['b-ok','Dicairkan'],
+    'ditolak':['b-warn','Ditolak'],
+    'lunas':['b-ok','Lunas']
   }
-  const [cls, text] = map[state.status] || ['warn','Belum diajukan']
-  chip.className = 'chip'; chip.textContent=' ' + text;
+  const [cls, text] = map[state.status] || ['b-warn','Belum diajukan']
+  chip.className = 'chip'; chip.textContent=text;
   badge.className = 'badge '+cls; badge.textContent=text
 
   const blocked = hasActiveLoan(nik)
@@ -503,8 +475,7 @@ function renderHome(){
       const tenor=12, per=Math.round(state.approved/tenor)
       state.installments = [...Array(tenor)].map((_,i)=>({n:i+1, due:`${new Date().getFullYear()}-${String(i+1).padStart(2,'0')}-10`, amt:per, paid:i<1}))
     }
-    renderInst()
-    document.getElementById('instWrap').style.display='block'
+    renderInst(); document.getElementById('instWrap').style.display='block'
   }else{
     document.getElementById('instWrap').style.display='none'
     state.installments=[]
@@ -512,15 +483,11 @@ function renderHome(){
 
   renderTicker();
 }
-
 function applyNow(){
   const nik = localStorage.getItem('kbm_nik'); if(!nik) return alert('Belum login')
   if(hasActiveLoan(nik)) return alert('Masih ada pinjaman aktif (belum lunas)')
-  const apps=load('kbm_apps',[])
-  apps.push({ts:Date.now(), nik, period:state.period, status_auto:'menunggu', status_admin:'', approved:0})
-  save('kbm_apps',apps)
-  alert('Pengajuan terkirim. Menunggu verifikasi admin.')
-  refreshStatus()
+  const apps=load('kbm_apps',[]); apps.push({ts:Date.now(), nik, period:state.period, status_auto:'menunggu', status_admin:'', approved:0})
+  save('kbm_apps',apps); alert('Pengajuan terkirim. Menunggu verifikasi admin.'); refreshStatus()
 }
 function refreshStatus(){ renderHome(); renderLoans(); }
 
@@ -529,27 +496,27 @@ function renderInst(){
   const wrap=document.getElementById('instList'); wrap.innerHTML=''
   state.installments.forEach(it=>{
     const div=document.createElement('div')
-    div.style.cssText='display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);border-radius:14px;padding:12px;background:rgba(255,255,255,.06)'
-    div.innerHTML=`<div><div style="font-weight:900;color:#FFFFFF">Cicilan #${it.n}</div><div class="muted">Jatuh tempo ${it.due}</div></div>
-                   <div style="text-align:right"><div style="font-weight:900;color:#FFFFFF">${idr(it.amt)}</div>
-                   <span class="badge ${it.paid?'ok':'warn'}">${it.paid?'Lunas':'Belum'}</span></div>`
+    div.style.cssText='display:flex;justify-content:space-between;align-items:center;border:1px solid #E6F1FC;border-radius:14px;padding:12px;background:#F7FBFF'
+    div.innerHTML=`<div><div style="font-weight:900">Cicilan #${it.n}</div><div class="muted">Jatuh tempo ${it.due}</div></div>
+                   <div style="text-align:right"><div style="font-weight:900">${idr(it.amt)}</div>
+                   <span class="badge ${it.paid?'b-ok':'b-warn'}">${it.paid?'Lunas':'Belum'}</span></div>`
     wrap.appendChild(div)
   })
 }
 
-/* ========= LOANS ========= */
+/* ========= LIST PINJAMAN ========= */
 function renderLoans(){
   const nik = localStorage.getItem('kbm_nik'); if(!nik) return
   const list=document.getElementById('loansList'); list.innerHTML=''
   const rows = load('kbm_apps',[]).filter(a=>a.nik===nik).sort((a,b)=>b.ts-a.ts)
   rows.forEach(a=>{
     const status=(a.status_admin||a.status_auto||'menunggu').toLowerCase()
-    const tag = status==='ditolak'?'warn':(['disetujui','dicairkan','lunas'].includes(status)?'ok':'info')
+    const tag = status==='ditolak'?'b-warn':(['disetujui','dicairkan','lunas'].includes(status)?'b-ok':'b-info')
     const t = new Date(a.ts).toLocaleString('id-ID',{dateStyle:'medium', timeStyle:'short'})
-    const approved = a.approved? `<div class="muted">Disetujui: <b style="color:#FFFFFF">${idr(a.approved)}</b></div>` : ''
+    const approved = a.approved? `<div class="muted">Disetujui: <b>${idr(a.approved)}</b></div>` : ''
     const item = document.createElement('div')
-    item.style.cssText='display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);border-radius:14px;padding:12px;background:rgba(255,255,255,.06)'
-    item.innerHTML = `<div><div style="font-weight:900;color:#FFFFFF">Pengajuan ${a.period||new Date(a.ts).getFullYear()}</div><div class="muted">${t}</div>${approved}</div><span class="badge ${tag}">${status}</span>`
+    item.style.cssText='display:flex;justify-content:space-between;align-items:center;border:1px solid #E6F1FC;border-radius:14px;padding:12px;background:#F7FBFF'
+    item.innerHTML = `<div><div style="font-weight:900">Pengajuan ${a.period||new Date(a.ts).getFullYear()}</div><div class="muted">${t}</div>${approved}</div><span class="badge ${tag}">${status}</span>`
     list.appendChild(item)
   })
 }
@@ -557,14 +524,13 @@ function renderLoans(){
 /* ========= ACCOUNT ========= */
 function currentUser(){
   const nik = localStorage.getItem('kbm_nik'); if(!nik) return null
-  const users=load('kbm_users',[])
-  return users.find(u=>u.nik===nik)||null
+  const users=load('kbm_users',[]); return users.find(u=>u.nik===nik)||null
 }
 function renderAccount(){
   const u=currentUser(); if(!u) return
   document.getElementById('accName').textContent = u.nama || 'Karyawan'
   document.getElementById('accId').textContent = `NIK ${mask(u.nik)} • NIP ${mask(u.nip)}`
-  document.getElementById('avatar').src = u.profile?.photo || 'data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><rect width=%22128%22 height=%22128%22 rx=%2264%22 fill=%22%23122634%22/><circle cx=%2264%22 cy=%2248%22 r=%2228%22 fill=%22%2333B7F6%22/><rect x=%2220%22 y=%2276%22 width=%2288%22 height=%2238%22 rx=%2219%22 fill=%22%2322D3EE%22/></svg>'
+  document.getElementById('avatar').src = u.profile?.photo || 'data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><rect width=%22128%22 height=%22128%22 rx=%2264%22 fill=%2316A9FF/><circle cx=%2264%22 cy=%2248%22 r=%2228%22 fill=%23E6F7FF/><rect x=%2220%22 y=%2276%22 width=%2288%22 height=%2238%22 rx=%2219%22 fill=%23CFF0FF/></svg>'
   document.getElementById('p_nama').value   = u.nama || ''
   document.getElementById('p_jabatan').value= u.profile?.jabatan || ''
   document.getElementById('p_unit').value   = u.profile?.unit || ''
@@ -610,41 +576,10 @@ function removePhoto(){
 
 /* ========= TICKER ========= */
 function renderTicker(){
-  const arr = load('kbm_news', []);
+  const arr = load('kbm_news', [])
   const txt = arr.length ? ("&nbsp;&nbsp;•&nbsp;&nbsp;" + arr.join("&nbsp;&nbsp;•&nbsp;&nbsp;")) : "Tidak ada pengumuman";
-  const el = document.getElementById('tickerText');
-  if(el){ el.innerHTML = `<span>${txt}</span>`; }
+  const el = document.getElementById('tickerText'); if(el) el.innerHTML = `<span>${txt}</span>`;
 }
-
-/* ========= PARALLAX ========= */
-(function parallax(){
-  const root = document.querySelector('.bg-anim'); if(!root) return;
-  const b1 = root.querySelector('.b1'), b2 = root.querySelector('.b2'), b3 = root.querySelector('.b3');
-  let mx=0, my=0, sy=0, ticking=false;
-
-  function onMove(e){
-    const x = (e.clientX ?? innerWidth/2) / innerWidth - .5;
-    const y = (e.clientY ?? innerHeight/2) / innerHeight - .5;
-    mx = x; my = y; requestTick();
-  }
-  function onScroll(){
-    sy = window.scrollY / Math.max(1, document.body.scrollHeight - innerHeight);
-    requestTick();
-  }
-  function requestTick(){ if(!ticking){ ticking = true; requestAnimationFrame(apply) } }
-  function apply(){
-    ticking=false;
-    const f1x = mx * 14, f1y = (my + sy*0.2) * 14;
-    const f2x = -mx * 18, f2y = (-my + sy*0.3) * 18;
-    const f3x = mx * 10, f3y = sy * 22 - 8;
-    if(b1) b1.style.transform = `translate3d(${f1x}px, ${f1y}px, 0)`;
-    if(b2) b2.style.transform = `translate3d(${f2x}px, ${f2y}px, 0)`;
-    if(b3) b3.style.transform = `translate3d(${f3x}px, ${f3y}px, 0) scale(1.02)`;
-  }
-  window.addEventListener('mousemove', onMove, {passive:true});
-  window.addEventListener('scroll', onScroll, {passive:true});
-  onScroll();
-})();
 
 /* ========= ADMIN DEMO (console) =========
    demoAdmin({limit:20000000})
