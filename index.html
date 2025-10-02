@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-<title>KOPBAM • Demo</title>
+<title>KOPBAM • Portal Karyawan</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
     --blue:#0EA5E9; --blue2:#22D3EE; --blue3:#1D4ED8;
     --ink:#0F172A; --text:#0B1220; --muted:#5B7BA0;
-    --white:#ffffff; --line:#DDE8F5; --chip:#E8F3FF;
+    --white:#fff; --line:#DDE8F5; --chip:#E8F3FF;
     --ok:#10B981; --warn:#F59E0B; --bad:#EF4444;
     --radius:18px; --radius-md:14px; --radius-lg:22px;
   }
@@ -27,23 +27,28 @@
   .b3{background:radial-gradient(closest-side at 30% 0%, #B0F1FF, transparent 60%)}
   .app{width:min(520px,100%); margin:0 auto; padding:0 14px 100px}
 
+  /* Logo */
   .logo{width:28px; height:28px; object-fit:contain; border-radius:8px; display:block}
   .logo-xl{width:64px; height:64px; object-fit:contain; border-radius:14px; display:block}
 
+  /* Splash */
   .splash{position:fixed; inset:0; display:grid; place-items:center; background:linear-gradient(135deg,#08B3FF 0%,#1AC8FF 50%,#4DDCFF 100%); z-index:99}
   .splash-logo{display:flex; align-items:center; gap:12px; color:#fff; font-weight:900; font-size:1.1rem}
   .fade-out{animation:fadeout .45s ease both}
   @keyframes fadeout{to{opacity:0; visibility:hidden}}
 
+  /* Appbar */
   .appbar{position:sticky; top:0; z-index:10; background:linear-gradient(180deg,#0EB6FE 0%, #199AFF 100%); color:#fff; border-radius:0 0 14px 14px; box-shadow:0 10px 30px rgba(0,0,0,.12)}
   .appbar-inner{display:flex; align-items:center; justify-content:space-between; padding:14px}
   .brand{display:flex; align-items:center; gap:10px; font-weight:900}
   .badge-pill{font-weight:800; background:rgba(255,255,255,.3); padding:6px 10px; border-radius:999px}
 
+  /* Cards */
   .card{background:#fff; border:1px solid var(--line); border-radius:var(--radius-lg); box-shadow:0 18px 40px rgba(31,97,171,.12); padding:16px; margin:14px 0}
   .title{font-weight:900; margin-bottom:8px}
   .muted{color:var(--muted); font-weight:600}
 
+  /* Inputs/Buttons */
   label{font-size:.92rem; color:#1B3C63; font-weight:700}
   input,textarea,select{width:100%; padding:13px 14px; border-radius:14px; border:1px solid var(--line); background:#F7FBFF; color:#083356}
   input:focus,textarea:focus,select:focus{outline:none; border-color:#9AD9FF; box-shadow:0 0 0 3px rgba(0,160,255,.15)}
@@ -59,6 +64,7 @@
   .view{display:none} .view.active{display:block}
   .fade{animation:fade .25s ease both} @keyframes fade{from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none}}
 
+  /* Top menu */
   .topmenu{padding:12px 14px}
   .menu-row{display:grid; grid-template-columns:repeat(5,1fr); gap:10px}
   .menu-item{display:flex; flex-direction:column; align-items:center; text-align:center}
@@ -66,16 +72,19 @@
   .ico-wrap svg{width:28px; height:28px}
   .mname{font-size:.85rem; font-weight:800; margin-top:6px; color:#0E2E4B}
 
+  /* Hero */
   .hero{position:relative; padding:18px; border-radius:22px; overflow:hidden; background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(255,255,255,.84)); border:1px solid #E6F1FC}
   .hero .big{font-size:1.9rem; font-weight:900; color:#0A2035}
   .chip{display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px; background:var(--chip); font-weight:800; color:#1C3B5A; border:1px solid #D8E9FF}
 
+  /* Badges */
   .badge{display:inline-flex; gap:8px; align-items:center; padding:8px 12px; border-radius:999px; font-weight:800}
   .b-ok{background:#E6FFF6; color:#066A4C; border:1px solid #BDF0E2}
   .b-warn{background:#FFF5E6; color:#7A4B02; border:1px solid #FFE0B0}
   .b-info{background:#EEF7FF; color:#14446E; border:1px solid #CDE5FF}
   .b-bad{background:#FFECEB; color:#7A1C1C; border:1px solid #FFC9C6}
 
+  /* Ticker */
   .ticker-card{padding:0; overflow:hidden}
   .ticker-head{display:flex; align-items:center; gap:8px; padding:10px 12px; border-bottom:1px solid #E6F1FC; color:#0B3B64; font-weight:900}
   .ticker{white-space:nowrap; overflow:hidden; padding:10px 0; background:linear-gradient(90deg, rgba(0,0,0,0), rgba(0,0,0,.02) 50%, rgba(0,0,0,0))}
@@ -83,7 +92,12 @@
   .ticker:hover > div{animation-play-state:paused}
   @keyframes ticker { 0% { transform: translateX(0) } 100% { transform: translateX(-100%) } }
 
+  /* Footer */
   .foot{margin:18px 0 8px; text-align:center; color:#6A88AA; font-weight:700; font-size:.86rem}
+
+  /* Loans skeleton/loading */
+  .skeleton{height:56px; border-radius:14px; background:linear-gradient(90deg,#f1f6ff 25%, #e7f0ff 37%, #f1f6ff 63%); animation:shimmer 1.3s infinite; border:1px solid #E6F1FC}
+  @keyframes shimmer{0%{background-position:-200px 0}100%{background-position:calc(200px + 100%) 0}}
 </style>
 </head>
 <body>
@@ -91,7 +105,7 @@
 <!-- BG -->
 <div class="bg-wrap"><div class="bg-blob b1"></div><div class="bg-blob b2"></div><div class="bg-blob b3"></div></div>
 
-<!-- SPLASH -->
+<!-- Splash -->
 <div id="splash" class="splash">
   <div class="splash-logo">
     <img class="logo-xl" src="assets/LOGO.png" alt="KOPBAM" loading="eager"> KOPBAM
@@ -100,7 +114,7 @@
 
 <div class="app">
 
-  <!-- AUTH -->
+  <!-- ===== AUTH ===== -->
   <section id="auth" class="view active fade">
     <div class="appbar">
       <div class="appbar-inner">
@@ -136,14 +150,16 @@
     </div>
   </section>
 
-  <!-- APP -->
+  <!-- ===== APP VIEW ===== -->
   <section id="appView" class="view">
+
     <div class="appbar">
       <div class="appbar-inner">
         <div class="brand"><img class="logo" src="assets/LOGO.png" alt="KOPBAM" loading="eager">KOPBAM</div>
         <div class="badge-pill">Periode <span id="period">2025</span></div>
       </div>
 
+      <!-- Top menu -->
       <div class="topmenu">
         <div class="menu-row">
           <div class="menu-item" onclick="switchTab('home')">
@@ -175,7 +191,7 @@
       </div>
     </div>
 
-    <!-- HOME -->
+    <!-- ===== HOME ===== -->
     <section id="home" class="view active fade">
       <div class="card hero">
         <div class="row" style="justify-content:space-between">
@@ -187,7 +203,7 @@
         </div>
         <div class="row" style="margin-top:12px">
           <button id="btnApply" class="btn btn-primary" onclick="applyNow()">Ajukan Pinjaman</button>
-          <button class="btn btn-ghost" onclick="refreshStatus()">Perbarui</button>
+          <button class="btn btn-ghost" onclick="forceRefresh()">Perbarui</button>
         </div>
         <div id="blockNote" class="muted" style="display:none; margin-top:8px">
           Ada pinjaman aktif. Ajukan lagi jika <b>lunas</b> atau <b>ditolak</b>.
@@ -214,21 +230,24 @@
         </div>
       </div>
 
-      <div id="instWrap" class="card" style="display:none">
-        <div class="title">Cicilan</div>
-        <div id="instList" style="display:grid; gap:10px"></div>
-      </div>
-
       <div class="foot">Version 1.0.0 • Crafted by Anggara Pradana</div>
     </section>
 
-    <!-- LOANS -->
+    <!-- ===== LOANS ===== -->
     <section id="loans" class="view fade">
-      <div class="card"><div class="title">Daftar Pengajuan</div><div id="loansList" style="display:grid; gap:10px"></div></div>
+      <div class="card">
+        <div class="title">Daftar Pengajuan</div>
+        <div id="loansList" style="display:grid; gap:10px">
+          <!-- skeleton default -->
+          <div class="skeleton"></div>
+          <div class="skeleton"></div>
+        </div>
+        <div id="loansEmpty" class="muted" style="display:none; margin-top:8px">Belum ada pengajuan.</div>
+      </div>
       <div class="foot">Version 1.0.0 • Crafted by Anggara Pradana</div>
     </section>
 
-    <!-- ACCOUNT -->
+    <!-- ===== ACCOUNT ===== -->
     <section id="account" class="view fade">
       <div class="card">
         <div class="title">Akun Karyawan</div>
@@ -267,21 +286,7 @@
       <div class="foot">Version 1.0.0 • Crafted by Anggara Pradana</div>
     </section>
 
-    <!-- SETTINGS -->
-    <section id="settings" class="view fade">
-      <div class="card">
-        <div class="title">Pengaturan</div>
-        <div class="row" style="justify-content:space-between; width:100%; background:#F7FBFF; border:1px solid #E6F1FC; border-radius:14px; padding:12px">
-          <div class="muted">Notifikasi</div><div class="badge b-ok">Aktif</div>
-        </div>
-        <div class="row" style="justify-content:space-between; width:100%; background:#F7FBFF; border:1px solid #E6F1FC; border-radius:14px; padding:12px; margin-top:10px">
-          <div class="muted">Sesi</div><button class="btn btn-ghost" onclick="logout()">Keluar</button>
-        </div>
-      </div>
-      <div class="foot">Version 1.0.0 • Crafted by Anggara Pradana</div>
-    </section>
-
-    <!-- INBOX -->
+    <!-- ===== INBOX ===== -->
     <section id="inbox" class="view fade">
       <div class="card"><div class="title">Inbox</div><div class="muted">Notifikasi dari koperasi akan tampil di sini.</div></div>
       <div class="foot">Version 1.0.0 • Crafted by Anggara Pradana</div>
@@ -291,41 +296,44 @@
 </div>
 
 <script>
-/* === KONFIG API === */
+/* ========= KONFIG API ========= */
 const API_BASE = 'https://script.google.com/macros/s/AKfycbz1_yKXS0xjAyKMg9vXOb5-KcY0xL3NySeSZw0eqS1NGC25LJdjgUAtLNp07SQo6J2eZQ/exec';
 
-/* === UTIL === */
+/* ========= UTIL ========= */
 const idr=n=>new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(n);
 const mask=(s,k=4)=> s ? s.slice(0,k)+'*'.repeat(Math.max(0,s.length-k-2))+s.slice(-2) : '-';
+const sleep = (ms)=> new Promise(r=>setTimeout(r,ms));
 function toast(msg){ alert(msg); }
 
-/* fetch helper TANPA preflight (kunci anti-FAILED TO FETCH) */
-async function api(action, payload={}, {retries=1, timeout=12000} = {}){
+/* Robust fetch dengan timeout dan retry */
+async function api(action, payload={}, {retries=1,timeout=12000,cacheBust=false}={}){
   const controller = new AbortController();
   const t = setTimeout(()=>controller.abort(), timeout);
+  const body = JSON.stringify({action, ...payload, _cb: cacheBust? Date.now(): undefined});
   try{
     const r = await fetch(API_BASE, {
       method:'POST',
-      headers:{ 'Content-Type':'text/plain;charset=utf-8' }, // simple request → no preflight
-      body: JSON.stringify({action, ...payload}),
-      signal: controller.signal
+      headers:{'Content-Type':'application/json'},
+      body, signal: controller.signal
     });
     clearTimeout(t);
-    let j=null;
-    try{ j = await r.json(); }catch{ throw new Error('Respon server bukan JSON'); }
-    if(!j.ok) throw new Error(j.error || 'Gagal');
+    let j; try{ j=await r.json(); }catch{ throw new Error('Respon bukan JSON'); }
+    if(!j.ok) throw new Error(j.error||'Gagal');
     return j;
-  }catch(err){
+  }catch(e){
     clearTimeout(t);
-    if(retries>0) return api(action, payload, {retries:retries-1, timeout});
-    throw new Error('Gagal menghubungkan server. ' + (err.message||''));
+    if(retries>0){
+      await sleep(600);
+      return api(action,payload,{retries:retries-1,timeout});
+    }
+    throw e;
   }
 }
 
-/* SPLASH */
+/* ========= SPLASH ========= */
 window.addEventListener('load',()=>{ setTimeout(()=> document.getElementById('splash').classList.add('fade-out'), 600); });
 
-/* AUTH */
+/* ========= AUTH ========= */
 function switchAuth(mode){
   const L=document.getElementById('formLogin'), R=document.getElementById('formReg');
   if(mode==='reg'){ L.style.display='none'; R.style.display='block'; }
@@ -339,23 +347,23 @@ async function doSignup(){
   const nama=document.getElementById('r_nama').value.trim();
   const phone=document.getElementById('r_hp').value.trim();
   try{
-    await api('register',{nik,nip,nama,phone});
+    await api('register',{nik,nip,nama,phone},{retries:1});
     toast('Pendaftaran berhasil. Silakan login.');
     switchAuth('login');
-  }catch(e){ toast(e.message); }
+  }catch(e){ toast('Gagal: '+e.message); }
 }
 
 async function doLogin(){
   const nik=document.getElementById('nik').value.trim();
   const nip=document.getElementById('nip').value.trim();
   try{
-    const res = await api('login',{nik,nip});
+    const res = await api('login',{nik,nip},{retries:1});
     const u = res.user;
     localStorage.setItem('kbm_auth','1');
     localStorage.setItem('kbm_nik', u.nik);
     localStorage.setItem('kbm_name', u.nama || 'Karyawan');
     openApp();
-  }catch(e){ toast(e.message); }
+  }catch(e){ toast('Gagal login: '+e.message); }
 }
 
 function logout(){
@@ -363,39 +371,43 @@ function logout(){
   location.reload();
 }
 
-/* NAV */
+/* ========= APP NAV ========= */
 function openApp(){
   document.getElementById('auth').classList.remove('active');
   document.getElementById('auth').style.display='none';
   document.getElementById('appView').classList.add('active');
   document.getElementById('period').textContent = new Date().getFullYear();
-  renderHome(); renderLoans(); renderAccount();
+  renderHome(); renderLoans(true); renderAccount();
+
+  // refresh otomatis saat tab kembali aktif
+  document.addEventListener('visibilitychange', ()=>{
+    if(!document.hidden){
+      renderHome();
+      renderLoans(true);
+    }
+  });
 }
 function switchTab(id){
   document.querySelectorAll('#appView > section').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   if(id==='home') renderHome();
-  if(id==='loans') renderLoans();
+  if(id==='loans') renderLoans(false);
   if(id==='account') renderAccount();
 }
+function forceRefresh(){ renderHome(true); renderLoans(true); }
 
-/* HOME */
-async function renderHome(){
+/* ========= HOME ========= */
+async function renderHome(force=false){
   const nik = localStorage.getItem('kbm_nik'); if(!nik) return;
   try{
-    const {limit, status, approved, activeLoan} = await api('summary',{nik});
-    document.getElementById('limitText').textContent = limit ? idr(Number(limit)) : 'Belum ditetapkan';
+    const {limit,status,approved,activeLoan} = await api('summary',{nik},{retries:1,cacheBust:force});
+    // TAMPILAN LIMIT — anti NaN
+    const limNum = Number(limit||0);
+    document.getElementById('limitText').textContent = limNum>0 ? idr(limNum) : 'Belum ditetapkan';
+
     const chip=document.getElementById('statusChip');
     const badge=document.getElementById('statusBadge');
-    const map={
-      'belum':['b-warn','Belum diajukan'],
-      'menunggu':['b-info','Menunggu verifikasi'],
-      'verifikasi':['b-info','Verifikasi Admin'],
-      'disetujui':['b-ok','Disetujui'],
-      'dicairkan':['b-ok','Dicairkan'],
-      'ditolak':['b-warn','Ditolak'],
-      'lunas':['b-ok','Lunas']
-    };
+    const map={ 'belum':['b-warn','Belum diajukan'],'menunggu':['b-info','Menunggu verifikasi'],'verifikasi':['b-info','Verifikasi Admin'],'disetujui':['b-ok','Disetujui'],'dicairkan':['b-ok','Dicairkan'],'ditolak':['b-warn','Ditolak'],'lunas':['b-ok','Lunas'] };
     const [cls, text] = map[status] || ['b-warn','Belum diajukan'];
     chip.className='chip'; chip.textContent=text;
     badge.className='badge '+cls; badge.textContent=text;
@@ -409,47 +421,71 @@ async function renderHome(){
     }else{
       document.getElementById('approvedWrap').style.display='none';
     }
-    document.getElementById('instWrap').style.display='none';
-  }catch(e){ toast(e.message); }
+  }catch(e){ toast('Gagal memuat beranda: '+e.message); }
 }
 
 async function applyNow(){
   const nik = localStorage.getItem('kbm_nik'); if(!nik) return toast('Belum login');
   try{
-    await api('apply',{nik});
+    await api('apply',{nik},{retries:1});
     toast('Pengajuan terkirim. Menunggu verifikasi admin.');
-    refreshStatus();
+    forceRefresh();
   }catch(e){ toast(e.message); }
 }
-function refreshStatus(){ renderHome(); renderLoans(); }
 
-/* LOANS */
-async function renderLoans(){
+/* ========= LOANS (andal + cache) ========= */
+async function renderLoans(forceFetch){
   const nik = localStorage.getItem('kbm_nik'); if(!nik) return;
-  const list=document.getElementById('loansList'); list.innerHTML='';
+  const list=document.getElementById('loansList');
+  const empty=document.getElementById('loansEmpty');
+
+  // tampilkan skeleton
+  list.innerHTML='<div class="skeleton"></div><div class="skeleton"></div>';
+  empty.style.display='none';
+
+  // coba cache dulu agar tidak “menghilang”
+  const cacheKey = 'kbm_loans_'+nik;
+  if(!forceFetch){
+    const cache = JSON.parse(localStorage.getItem(cacheKey)||'null');
+    if(cache && Array.isArray(cache) && cache.length){
+      drawLoans(cache);
+    }
+  }
+
   try{
-    const {rows} = await api('loans',{nik});
+    const {rows} = await api('loans',{nik},{retries:2,cacheBust:true});
+    localStorage.setItem(cacheKey, JSON.stringify(rows||[]));
+    drawLoans(rows||[]);
+  }catch(e){
+    // jika fetch gagal tapi ada cache, diam; jika tidak ada, tampilkan kosong
+    const cache = JSON.parse(localStorage.getItem(cacheKey)||'null') || [];
+    if(cache.length===0){
+      list.innerHTML='';
+      empty.style.display='block';
+    }
+  }
+
+  function drawLoans(rows){
+    list.innerHTML='';
+    if(!rows.length){ empty.style.display='block'; return; }
+    empty.style.display='none';
     rows.forEach(a=>{
       const tag = a.status==='ditolak'?'b-warn':(['disetujui','dicairkan','lunas'].includes(a.status)?'b-ok':'b-info');
-      const t = new Date(a.ts).toLocaleString('id-ID',{dateStyle:'medium', timeStyle:'short'});
+      const t = a.ts ? new Date(a.ts).toLocaleString('id-ID',{dateStyle:'medium', timeStyle:'short'}) : '-';
       const approved = a.approved? `<div class="muted">Disetujui: <b>${idr(a.approved)}</b></div>` : '';
       const div=document.createElement('div');
       div.style.cssText='display:flex;justify-content:space-between;align-items:center;border:1px solid #E6F1FC;border-radius:14px;padding:12px;background:#F7FBFF';
       div.innerHTML=`<div><div style="font-weight:900">Pengajuan ${a.period||''}</div><div class="muted">${t}</div>${approved}</div><span class="badge ${tag}">${a.status}</span>`;
       list.appendChild(div);
     });
-    if(rows.length===0){
-      const emp=document.createElement('div'); emp.className='muted'; emp.textContent='Belum ada pengajuan.';
-      list.appendChild(emp);
-    }
-  }catch(e){ toast(e.message); }
+  }
 }
 
-/* ACCOUNT */
+/* ========= ACCOUNT ========= */
 async function renderAccount(){
   const nik = localStorage.getItem('kbm_nik'); if(!nik) return;
   try{
-    const {profile:p} = await api('profile.get',{nik});
+    const {profile:p} = await api('profile.get',{nik},{retries:1});
     document.getElementById('accName').textContent = p.nama || 'Karyawan';
     document.getElementById('accId').textContent = `NIK ${mask(p.nik)} • NIP ${mask(p.nip)}`;
     document.getElementById('avatar').src = p.photo || 'data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><rect width=%22128%22 height=%22128%22 rx=%2264%22 fill=%2316A9FF/><circle cx=%2264%22 cy=%2248%22 r=%2228%22 fill=%23E6F7FF/><rect x=%2220%22 y=%2276%22 width=%2288%22 height=%2238%22 rx=%2219%22 fill=%23CFF0FF/></svg>';
@@ -460,7 +496,7 @@ async function renderAccount(){
     document.getElementById('p_tgl').value    = p.tgl || '';
     document.getElementById('p_alamat').value = p.alamat || '';
     document.getElementById('p_hp').value     = p.phone || '';
-  }catch(e){ toast(e.message); }
+  }catch(e){ toast('Gagal memuat profil: '+e.message); }
 }
 
 async function saveProfile(){
@@ -475,11 +511,10 @@ async function saveProfile(){
     alamat:document.getElementById('p_alamat').value.trim()
   };
   try{
-    await api('profile.save',{nik, fields});
-    document.getElementById('saveOk').style.display='block';
-    setTimeout(()=> document.getElementById('saveOk').style.display='none', 1500);
+    await api('profile.save',{nik, fields},{retries:1});
+    const ok=document.getElementById('saveOk'); ok.style.display='block'; setTimeout(()=>ok.style.display='none',1500);
     renderAccount();
-  }catch(e){ toast(e.message); }
+  }catch(e){ toast('Gagal simpan: '+e.message); }
 }
 
 function onPhoto(e){
@@ -493,19 +528,17 @@ function onPhoto(e){
       ctx.drawImage(img,sx,sy,m,m,0,0,s,s);
       const data=c.toDataURL('image/jpeg',.85);
       const nik=localStorage.getItem('kbm_nik');
-      api('profile.save',{nik, fields:{photo:data}})
+      api('profile.save',{nik, fields:{photo:data}},{retries:1})
         .then(()=> { document.getElementById('avatar').src=data; })
-        .catch(e=>toast(e.message));
-    };
-    img.src=r.result;
-  };
-  r.readAsDataURL(f); e.target.value='';
+        .catch(e=>toast('Gagal upload: '+e.message));
+    }; img.src=r.result;
+  }; r.readAsDataURL(f); e.target.value='';
 }
 function removePhoto(){
   const nik=localStorage.getItem('kbm_nik'); if(!nik) return;
-  api('profile.save',{nik, fields:{photo:''}})
+  api('profile.save',{nik, fields:{photo:''}},{retries:1})
     .then(()=> renderAccount())
-    .catch(e=>toast(e.message));
+    .catch(e=>toast('Gagal hapus foto: '+e.message));
 }
 </script>
 </body>
