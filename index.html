@@ -100,7 +100,7 @@
 
 <div class="app">
 
-  <!-- ===== AUTH ===== -->
+  <!-- AUTH -->
   <section id="auth" class="view active fade">
     <div class="appbar">
       <div class="appbar-inner">
@@ -136,9 +136,8 @@
     </div>
   </section>
 
-  <!-- ===== APP ===== -->
+  <!-- APP -->
   <section id="appView" class="view">
-
     <div class="appbar">
       <div class="appbar-inner">
         <div class="brand"><img class="logo" src="assets/LOGO.png" alt="KOPBAM" loading="eager">KOPBAM</div>
@@ -176,13 +175,13 @@
       </div>
     </div>
 
-    <!-- ===== HOME ===== -->
+    <!-- HOME -->
     <section id="home" class="view active fade">
       <div class="card hero">
         <div class="row" style="justify-content:space-between">
           <div>
             <div class="muted">Limit Tersedia</div>
-            <div id="limitText" class="big">Rp 0</div>
+            <div id="limitText" class="big">Belum ditetapkan</div>
           </div>
           <div id="statusChip" class="chip">Menunggu verifikasi</div>
         </div>
@@ -223,13 +222,13 @@
       <div class="foot">Version 1.0.0 • Crafted by Anggara Pradana</div>
     </section>
 
-    <!-- ===== LOANS ===== -->
+    <!-- LOANS -->
     <section id="loans" class="view fade">
       <div class="card"><div class="title">Daftar Pengajuan</div><div id="loansList" style="display:grid; gap:10px"></div></div>
       <div class="foot">Version 1.0.0 • Crafted by Anggara Pradana</div>
     </section>
 
-    <!-- ===== ACCOUNT ===== -->
+    <!-- ACCOUNT -->
     <section id="account" class="view fade">
       <div class="card">
         <div class="title">Akun Karyawan</div>
@@ -268,7 +267,7 @@
       <div class="foot">Version 1.0.0 • Crafted by Anggara Pradana</div>
     </section>
 
-    <!-- ===== SETTINGS ===== -->
+    <!-- SETTINGS -->
     <section id="settings" class="view fade">
       <div class="card">
         <div class="title">Pengaturan</div>
@@ -282,7 +281,7 @@
       <div class="foot">Version 1.0.0 • Crafted by Anggara Pradana</div>
     </section>
 
-    <!-- ===== INBOX ===== -->
+    <!-- INBOX -->
     <section id="inbox" class="view fade">
       <div class="card"><div class="title">Inbox</div><div class="muted">Notifikasi dari koperasi akan tampil di sini.</div></div>
       <div class="foot">Version 1.0.0 • Crafted by Anggara Pradana</div>
@@ -292,48 +291,44 @@
 </div>
 
 <script>
-/* ================= CONFIG ================= */
+/* === KONFIG API === */
 const API_BASE = 'https://script.google.com/macros/s/AKfycbz1_yKXS0xjAyKMg9vXOb5-KcY0xL3NySeSZw0eqS1NGC25LJdjgUAtLNp07SQo6J2eZQ/exec';
 
-/* ================= UTIL ================= */
+/* === UTIL === */
 const idr=n=>new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(n);
 const mask=(s,k=4)=> s ? s.slice(0,k)+'*'.repeat(Math.max(0,s.length-k-2))+s.slice(-2) : '-';
-const load=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{ return d }};
-const save=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
-function toast(m){ alert(m); }
+function toast(msg){ alert(msg); }
 
-/* Splash */
-window.addEventListener('load',()=>{ setTimeout(()=> document.getElementById('splash').classList.add('fade-out'), 600); });
-
-/* ================= API (ping + retry + timeout) ================= */
-async function api(action, payload={}, tryNo=1){
-  if (action !== 'ping' && tryNo === 1){
-    try{ await api('ping'); }catch(e){/* lanjut */ }
-  }
-  const ctrl = new AbortController();
-  const t = setTimeout(()=>ctrl.abort(), 20000);
+/* fetch helper TANPA preflight + retry */
+async function api(action, payload={}, {retries=1, timeout=12000} = {}){
+  const controller = new AbortController();
+  const t = setTimeout(()=>controller.abort(), timeout);
   try{
-    const res = await fetch(API_BASE,{
+    const r = await fetch(API_BASE, {
       method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({action, ...payload}),
-      signal: ctrl.signal
+      headers:{ 'Content-Type':'text/plain;charset=utf-8' }, // simple request → no preflight
+      body: JSON.stringify({action, ...payload}),
+      signal: controller.signal
     });
     clearTimeout(t);
-    const j = await res.json().catch(()=>{throw new Error('Respon bukan JSON')});
-    if(!j.ok) throw new Error(j.error||'Gagal');
+    let j=null;
+    try{ j = await r.json(); }catch{ throw new Error('Respon server bukan JSON'); }
+    if(!j.ok) throw new Error(j.error || 'Gagal');
     return j;
-  }catch(e){
+  }catch(err){
     clearTimeout(t);
-    if(tryNo<3){
-      await new Promise(r=>setTimeout(r, 600*tryNo));
-      return api(action, payload, tryNo+1);
-    }
-    throw e;
+    if(retries>0) return api(action, payload, {retries:retries-1, timeout});
+    throw new Error(err.message || 'Gagal menghubungkan server.');
   }
 }
 
-/* ================= AUTH ================= */
+/* PING cepat saat awal */
+api('ping', {}, {retries:0, timeout:6000}).catch(()=> toast('Server lambat/terputus. Coba lagi sebentar…'));
+
+/* SPLASH */
+window.addEventListener('load',()=>{ setTimeout(()=> document.getElementById('splash').classList.add('fade-out'), 600); });
+
+/* AUTH */
 function switchAuth(mode){
   const L=document.getElementById('formLogin'), R=document.getElementById('formReg');
   if(mode==='reg'){ L.style.display='none'; R.style.display='block'; }
@@ -371,13 +366,13 @@ function logout(){
   location.reload();
 }
 
-/* ================= APP NAV ================= */
+/* NAV */
 function openApp(){
   document.getElementById('auth').classList.remove('active');
   document.getElementById('auth').style.display='none';
   document.getElementById('appView').classList.add('active');
   document.getElementById('period').textContent = new Date().getFullYear();
-  renderHome(true); renderLoans(true); renderAccount();
+  renderHome(); renderLoans(); renderAccount();
 }
 function switchTab(id){
   document.querySelectorAll('#appView > section').forEach(s=>s.classList.remove('active'));
@@ -387,53 +382,51 @@ function switchTab(id){
   if(id==='account') renderAccount();
 }
 
-/* ================= HOME (cache-first) ================= */
-function paintHome({limit,status,approved,activeLoan}, offline){
-  const safeLimit = Number.isFinite(Number(limit)) ? Number(limit) : 0;
-  document.getElementById('limitText').textContent = idr(safeLimit);
-
-  const chip=document.getElementById('statusChip');
-  const badge=document.getElementById('statusBadge');
-  const map={
-    'belum':['b-warn','Belum diajukan'],
-    'menunggu':['b-info','Menunggu verifikasi'],
-    'verifikasi':['b-info','Verifikasi Admin'],
-    'disetujui':['b-ok','Disetujui'],
-    'dicairkan':['b-ok','Dicairkan'],
-    'ditolak':['b-warn','Ditolak'],
-    'lunas':['b-ok','Lunas']
-  };
-  const key=(status||'belum').toLowerCase();
-  const [cls,text]=map[key]||['b-warn','Belum diajukan'];
-  chip.className='chip';
-  chip.textContent = offline ? (text+' • Offline') : text;
-  badge.className='badge '+cls; badge.textContent=text;
-
-  document.getElementById('btnApply').disabled = !!activeLoan;
-  document.getElementById('blockNote').style.display = activeLoan ? 'block':'none';
-
-  if(['disetujui','dicairkan','lunas'].includes(key) && Number(approved)>0){
-    document.getElementById('approvedWrap').style.display='block';
-    document.getElementById('approvedAmt').textContent = idr(approved);
-  }else{
-    document.getElementById('approvedWrap').style.display='none';
-  }
-}
-
-async function renderHome(useCache=false){
+/* HOME — FIX RpNaN + robust */
+async function renderHome(){
   const nik = localStorage.getItem('kbm_nik'); if(!nik) return;
-  const cache = load(`cache_home_${nik}`, null);
-  if(cache) paintHome(cache,false);
-  else if(useCache) paintHome({limit:0,status:'belum',approved:0,activeLoan:false}, false);
-
   try{
-    const fresh = await api('summary',{nik});
-    save(`cache_home_${nik}`, fresh);
-    paintHome(fresh,false);
+    const {limit, status, approved, activeLoan} = await api('summary',{nik});
+
+    const limNum = (typeof limit === 'number')
+      ? limit
+      : Number(String(limit ?? '').replace(/[^\d\-]/g,'')) || 0;
+
+    document.getElementById('limitText').textContent =
+      limNum > 0 ? idr(limNum) : 'Belum ditetapkan';
+
+    const chip=document.getElementById('statusChip');
+    const badge=document.getElementById('statusBadge');
+    const map={
+      'belum':['b-warn','Belum diajukan'],
+      'menunggu':['b-info','Menunggu verifikasi'],
+      'verifikasi':['b-info','Verifikasi Admin'],
+      'disetujui':['b-ok','Disetujui'],
+      'dicairkan':['b-ok','Dicairkan'],
+      'ditolak':['b-warn','Ditolak'],
+      'lunas':['b-ok','Lunas']
+    };
+    const [cls, text] = map[String(status||'').toLowerCase()] || ['b-warn','Belum diajukan'];
+    chip.className='chip'; chip.textContent=text;
+    badge.className='badge '+cls; badge.textContent=text;
+
+    document.getElementById('btnApply').disabled = !!activeLoan;
+    document.getElementById('blockNote').style.display = activeLoan ? 'block':'none';
+
+    const appv = Number(
+      typeof approved === 'number' ? approved : String(approved ?? '').replace(/[^\d\-]/g,'')
+    ) || 0;
+
+    if(['disetujui','dicairkan','lunas'].includes(String(status||'').toLowerCase()) && appv>0){
+      document.getElementById('approvedWrap').style.display='block';
+      document.getElementById('approvedAmt').textContent = idr(appv);
+    }else{
+      document.getElementById('approvedWrap').style.display='none';
+    }
+
+    document.getElementById('instWrap').style.display='none';
   }catch(e){
-    if(cache) paintHome(cache,true);
-    else paintHome({limit:0,status:'belum',approved:0,activeLoan:false}, true);
-    console.warn('renderHome error:', e);
+    toast('Gagal memuat beranda: ' + e.message);
   }
 }
 
@@ -447,43 +440,50 @@ async function applyNow(){
 }
 function refreshStatus(){ renderHome(); renderLoans(); }
 
-/* ================= LOANS (cache-first) ================= */
-function paintLoans(rows){
-  const list=document.getElementById('loansList'); list.innerHTML='';
-  if(!rows || !rows.length){
-    const emp=document.createElement('div'); emp.className='muted'; emp.textContent='Belum ada pengajuan.';
-    list.appendChild(emp); return;
-  }
-  rows.forEach(a=>{
-    const status=(a.status||'menunggu').toLowerCase();
-    const tag = status==='ditolak'?'b-warn':(['disetujui','dicairkan','lunas'].includes(status)?'b-ok':'b-info');
-    const t = a.ts ? new Date(a.ts).toLocaleString('id-ID',{dateStyle:'medium', timeStyle:'short'}) : '';
-    const approved = a.approved? `<div class="muted">Disetujui: <b>${idr(a.approved)}</b></div>` : '';
-    const div=document.createElement('div');
-    div.style.cssText='display:flex;justify-content:space-between;align-items:center;border:1px solid #E6F1FC;border-radius:14px;padding:12px;background:#F7FBFF';
-    div.innerHTML=`<div><div style="font-weight:900">Pengajuan ${a.period||''}</div><div class="muted">${t}</div>${approved}</div><span class="badge ${tag}">${status}</span>`;
-    list.appendChild(div);
-  });
-}
-
-async function renderLoans(useCache=false){
+/* LOANS — cache + loading */
+async function renderLoans(){
   const nik = localStorage.getItem('kbm_nik'); if(!nik) return;
-  const cache = load(`cache_loans_${nik}`, []);
-  if(cache && cache.length) paintLoans(cache);
-  else if(useCache) paintLoans([]);
+  const list = document.getElementById('loansList');
+  list.innerHTML = '<div class="muted">Memuat…</div>';
+
+  const draw = (rows)=>{
+    list.innerHTML='';
+    if(!rows || !rows.length){
+      const emp=document.createElement('div'); emp.className='muted'; emp.textContent='Belum ada pengajuan.';
+      list.appendChild(emp); return;
+    }
+    rows.forEach(a=>{
+      const status = String(a.status||a.status_admin||a.status_auto||'menunggu').toLowerCase();
+      const tag = status==='ditolak'?'b-warn':(['disetujui','dicairkan','lunas'].includes(status)?'b-ok':'b-info');
+      const t = a.ts ? new Date(a.ts).toLocaleString('id-ID',{dateStyle:'medium', timeStyle:'short'}) : '-';
+      const approvedNum = Number(String(a.approved ?? '').replace(/[^\d\-]/g,'')) || 0;
+      const approved = approvedNum>0 ? `<div class="muted">Disetujui: <b>${idr(approvedNum)}</b></div>` : '';
+      const div=document.createElement('div');
+      div.style.cssText='display:flex;justify-content:space-between;align-items:center;border:1px solid #E6F1FC;border-radius:14px;padding:12px;background:#F7FBFF';
+      div.innerHTML=`<div><div style="font-weight:900">Pengajuan ${a.period||''}</div><div class="muted">${t}</div>${approved}</div><span class="badge ${tag}">${status}</span>`;
+      list.appendChild(div);
+    });
+  };
+
+  const cached = localStorage.getItem('kbm_loans');
+  if (cached){
+    try { draw(JSON.parse(cached)); } catch {}
+  }
 
   try{
     const {rows} = await api('loans',{nik});
-    save(`cache_loans_${nik}`, rows||[]);
-    paintLoans(rows||[]);
+    draw(rows);
+    localStorage.setItem('kbm_loans', JSON.stringify(rows||[]));
   }catch(e){
-    // tetap tampilkan cache (kalau ada)
-    if(cache && cache.length) paintLoans(cache);
-    console.warn('renderLoans error:', e);
+    if(!cached){
+      list.innerHTML='';
+      const emp=document.createElement('div'); emp.className='muted'; emp.textContent='Belum ada pengajuan (offline).';
+      list.appendChild(emp);
+    }
   }
 }
 
-/* ================= ACCOUNT ================= */
+/* ACCOUNT */
 async function renderAccount(){
   const nik = localStorage.getItem('kbm_nik'); if(!nik) return;
   try{
@@ -498,7 +498,7 @@ async function renderAccount(){
     document.getElementById('p_tgl').value    = p.tgl || '';
     document.getElementById('p_alamat').value = p.alamat || '';
     document.getElementById('p_hp').value     = p.phone || '';
-  }catch(e){ console.warn(e); toast('Gagal memuat akun: '+e.message); }
+  }catch(e){ toast(e.message); }
 }
 
 async function saveProfile(){
@@ -534,8 +534,10 @@ function onPhoto(e){
       api('profile.save',{nik, fields:{photo:data}})
         .then(()=> { document.getElementById('avatar').src=data; })
         .catch(e=>toast(e.message));
-    }; img.src=r.result;
-  }; r.readAsDataURL(f); e.target.value='';
+    };
+    img.src=r.result;
+  };
+  r.readAsDataURL(f); e.target.value='';
 }
 function removePhoto(){
   const nik=localStorage.getItem('kbm_nik'); if(!nik) return;
