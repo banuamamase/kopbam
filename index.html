@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-<title>KOPBAM • Portal Karyawan</title>
+<title>KOPBAM • Demo</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
     --blue:#0EA5E9; --blue2:#22D3EE; --blue3:#1D4ED8;
     --ink:#0F172A; --text:#0B1220; --muted:#5B7BA0;
-    --white:#fff; --line:#DDE8F5; --chip:#E8F3FF;
+    --white:#ffffff; --line:#DDE8F5; --chip:#E8F3FF;
     --ok:#10B981; --warn:#F59E0B; --bad:#EF4444;
     --radius:18px; --radius-md:14px; --radius-lg:22px;
   }
@@ -48,7 +48,7 @@
   .title{font-weight:900; margin-bottom:8px}
   .muted{color:var(--muted); font-weight:600}
 
-  /* Inputs/Buttons */
+  /* Inputs & buttons */
   label{font-size:.92rem; color:#1B3C63; font-weight:700}
   input,textarea,select{width:100%; padding:13px 14px; border-radius:14px; border:1px solid var(--line); background:#F7FBFF; color:#083356}
   input:focus,textarea:focus,select:focus{outline:none; border-color:#9AD9FF; box-shadow:0 0 0 3px rgba(0,160,255,.15)}
@@ -61,6 +61,7 @@
   .grid2{display:grid; grid-template-columns:1fr 1fr; gap:10px}
   @media(max-width:460px){ .grid2{grid-template-columns:1fr} }
 
+  /* Views */
   .view{display:none} .view.active{display:block}
   .fade{animation:fade .25s ease both} @keyframes fade{from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none}}
 
@@ -92,12 +93,7 @@
   .ticker:hover > div{animation-play-state:paused}
   @keyframes ticker { 0% { transform: translateX(0) } 100% { transform: translateX(-100%) } }
 
-  /* Footer */
   .foot{margin:18px 0 8px; text-align:center; color:#6A88AA; font-weight:700; font-size:.86rem}
-
-  /* Loans skeleton/loading */
-  .skeleton{height:56px; border-radius:14px; background:linear-gradient(90deg,#f1f6ff 25%, #e7f0ff 37%, #f1f6ff 63%); animation:shimmer 1.3s infinite; border:1px solid #E6F1FC}
-  @keyframes shimmer{0%{background-position:-200px 0}100%{background-position:calc(200px + 100%) 0}}
 </style>
 </head>
 <body>
@@ -114,7 +110,7 @@
 
 <div class="app">
 
-  <!-- ===== AUTH ===== -->
+  <!-- AUTH -->
   <section id="auth" class="view active fade">
     <div class="appbar">
       <div class="appbar-inner">
@@ -150,16 +146,14 @@
     </div>
   </section>
 
-  <!-- ===== APP VIEW ===== -->
+  <!-- APP -->
   <section id="appView" class="view">
-
     <div class="appbar">
       <div class="appbar-inner">
         <div class="brand"><img class="logo" src="assets/LOGO.png" alt="KOPBAM" loading="eager">KOPBAM</div>
         <div class="badge-pill">Periode <span id="period">2025</span></div>
       </div>
 
-      <!-- Top menu -->
       <div class="topmenu">
         <div class="menu-row">
           <div class="menu-item" onclick="switchTab('home')">
@@ -191,19 +185,19 @@
       </div>
     </div>
 
-    <!-- ===== HOME ===== -->
+    <!-- HOME -->
     <section id="home" class="view active fade">
       <div class="card hero">
         <div class="row" style="justify-content:space-between">
           <div>
             <div class="muted">Limit Tersedia</div>
-            <div id="limitText" class="big">Belum ditetapkan</div>
+            <div id="limitText" class="big">Rp 0</div>
           </div>
           <div id="statusChip" class="chip">Menunggu verifikasi</div>
         </div>
         <div class="row" style="margin-top:12px">
           <button id="btnApply" class="btn btn-primary" onclick="applyNow()">Ajukan Pinjaman</button>
-          <button class="btn btn-ghost" onclick="forceRefresh()">Perbarui</button>
+          <button class="btn btn-ghost" onclick="refreshStatus()">Perbarui</button>
         </div>
         <div id="blockNote" class="muted" style="display:none; margin-top:8px">
           Ada pinjaman aktif. Ajukan lagi jika <b>lunas</b> atau <b>ditolak</b>.
@@ -233,21 +227,13 @@
       <div class="foot">Version 1.0.0 • Crafted by Anggara Pradana</div>
     </section>
 
-    <!-- ===== LOANS ===== -->
+    <!-- LOANS -->
     <section id="loans" class="view fade">
-      <div class="card">
-        <div class="title">Daftar Pengajuan</div>
-        <div id="loansList" style="display:grid; gap:10px">
-          <!-- skeleton default -->
-          <div class="skeleton"></div>
-          <div class="skeleton"></div>
-        </div>
-        <div id="loansEmpty" class="muted" style="display:none; margin-top:8px">Belum ada pengajuan.</div>
-      </div>
+      <div class="card"><div class="title">Daftar Pengajuan</div><div id="loansList" style="display:grid; gap:10px"></div></div>
       <div class="foot">Version 1.0.0 • Crafted by Anggara Pradana</div>
     </section>
 
-    <!-- ===== ACCOUNT ===== -->
+    <!-- ACCOUNT -->
     <section id="account" class="view fade">
       <div class="card">
         <div class="title">Akun Karyawan</div>
@@ -286,7 +272,21 @@
       <div class="foot">Version 1.0.0 • Crafted by Anggara Pradana</div>
     </section>
 
-    <!-- ===== INBOX ===== -->
+    <!-- SETTINGS -->
+    <section id="settings" class="view fade">
+      <div class="card">
+        <div class="title">Pengaturan</div>
+        <div class="row" style="justify-content:space-between; width:100%; background:#F7FBFF; border:1px solid #E6F1FC; border-radius:14px; padding:12px">
+          <div class="muted">Notifikasi</div><div class="badge b-ok">Aktif</div>
+        </div>
+        <div class="row" style="justify-content:space-between; width:100%; background:#F7FBFF; border:1px solid #E6F1FC; border-radius:14px; padding:12px; margin-top:10px">
+          <div class="muted">Sesi</div><button class="btn btn-ghost" onclick="logout()">Keluar</button>
+        </div>
+      </div>
+      <div class="foot">Version 1.0.0 • Crafted by Anggara Pradana</div>
+    </section>
+
+    <!-- INBOX -->
     <section id="inbox" class="view fade">
       <div class="card"><div class="title">Inbox</div><div class="muted">Notifikasi dari koperasi akan tampil di sini.</div></div>
       <div class="foot">Version 1.0.0 • Crafted by Anggara Pradana</div>
@@ -296,44 +296,45 @@
 </div>
 
 <script>
-/* ========= KONFIG API ========= */
+/* ============ KONFIG ============ */
 const API_BASE = 'https://script.google.com/macros/s/AKfycbz1_yKXS0xjAyKMg9vXOb5-KcY0xL3NySeSZw0eqS1NGC25LJdjgUAtLNp07SQo6J2eZQ/exec';
 
-/* ========= UTIL ========= */
-const idr=n=>new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(n);
+/* ============ UTIL ============ */
+const idr = n => new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(Number(n||0));
 const mask=(s,k=4)=> s ? s.slice(0,k)+'*'.repeat(Math.max(0,s.length-k-2))+s.slice(-2) : '-';
-const sleep = (ms)=> new Promise(r=>setTimeout(r,ms));
+const load=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}}
+const save=(k,v)=>localStorage.setItem(k,JSON.stringify(v))
 function toast(msg){ alert(msg); }
 
-/* Robust fetch dengan timeout dan retry */
-async function api(action, payload={}, {retries=1,timeout=12000,cacheBust=false}={}){
-  const controller = new AbortController();
-  const t = setTimeout(()=>controller.abort(), timeout);
-  const body = JSON.stringify({action, ...payload, _cb: cacheBust? Date.now(): undefined});
+/* fetch with timeout + retry */
+async function api(action, payload={}, tryNo=1){
+  const ctrl = new AbortController();
+  const t = setTimeout(()=>ctrl.abort(), 10000); // 10s timeout
   try{
-    const r = await fetch(API_BASE, {
+    const res = await fetch(API_BASE, {
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body, signal: controller.signal
+      body: JSON.stringify({action, ...payload}),
+      signal: ctrl.signal
     });
     clearTimeout(t);
-    let j; try{ j=await r.json(); }catch{ throw new Error('Respon bukan JSON'); }
+    const j = await res.json().catch(()=>{throw new Error('Respon bukan JSON')});
     if(!j.ok) throw new Error(j.error||'Gagal');
     return j;
   }catch(e){
     clearTimeout(t);
-    if(retries>0){
-      await sleep(600);
-      return api(action,payload,{retries:retries-1,timeout});
+    if(tryNo < 3){ // retry up to 3 times
+      await new Promise(r=>setTimeout(r, 400*tryNo));
+      return api(action, payload, tryNo+1);
     }
     throw e;
   }
 }
 
-/* ========= SPLASH ========= */
-window.addEventListener('load',()=>{ setTimeout(()=> document.getElementById('splash').classList.add('fade-out'), 600); });
+/* Splash */
+window.addEventListener('load',()=>{ setTimeout(()=> document.getElementById('splash').classList.add('fade-out'), 600) });
 
-/* ========= AUTH ========= */
+/* Auth */
 function switchAuth(mode){
   const L=document.getElementById('formLogin'), R=document.getElementById('formReg');
   if(mode==='reg'){ L.style.display='none'; R.style.display='block'; }
@@ -347,145 +348,138 @@ async function doSignup(){
   const nama=document.getElementById('r_nama').value.trim();
   const phone=document.getElementById('r_hp').value.trim();
   try{
-    await api('register',{nik,nip,nama,phone},{retries:1});
+    await api('register',{nik,nip,nama,phone});
     toast('Pendaftaran berhasil. Silakan login.');
     switchAuth('login');
-  }catch(e){ toast('Gagal: '+e.message); }
+  }catch(e){ toast(e.message); }
 }
-
 async function doLogin(){
   const nik=document.getElementById('nik').value.trim();
   const nip=document.getElementById('nip').value.trim();
   try{
-    const res = await api('login',{nik,nip},{retries:1});
-    const u = res.user;
+    const r = await api('login',{nik,nip});
+    const u = r.user;
     localStorage.setItem('kbm_auth','1');
     localStorage.setItem('kbm_nik', u.nik);
     localStorage.setItem('kbm_name', u.nama || 'Karyawan');
     openApp();
-  }catch(e){ toast('Gagal login: '+e.message); }
+  }catch(e){ toast(e.message || 'Gagal login'); }
 }
-
 function logout(){
   localStorage.removeItem('kbm_auth'); localStorage.removeItem('kbm_nik'); localStorage.removeItem('kbm_name');
   location.reload();
 }
 
-/* ========= APP NAV ========= */
+/* App open / tab switch */
 function openApp(){
   document.getElementById('auth').classList.remove('active');
   document.getElementById('auth').style.display='none';
   document.getElementById('appView').classList.add('active');
   document.getElementById('period').textContent = new Date().getFullYear();
-  renderHome(); renderLoans(true); renderAccount();
-
-  // refresh otomatis saat tab kembali aktif
-  document.addEventListener('visibilitychange', ()=>{
-    if(!document.hidden){
-      renderHome();
-      renderLoans(true);
-    }
-  });
+  renderHome(true); renderLoans(true); renderAccount();
 }
 function switchTab(id){
   document.querySelectorAll('#appView > section').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   if(id==='home') renderHome();
-  if(id==='loans') renderLoans(false);
+  if(id==='loans') renderLoans();
   if(id==='account') renderAccount();
 }
-function forceRefresh(){ renderHome(true); renderLoans(true); }
 
-/* ========= HOME ========= */
-async function renderHome(force=false){
+/* HOME */
+async function renderHome(useCache=false){
   const nik = localStorage.getItem('kbm_nik'); if(!nik) return;
+  // tampilkan cache dulu agar instan
+  if(useCache){
+    const c = load(`cache_home_${nik}`, null);
+    if(c) paintHome(c);
+  }
   try{
-    const {limit,status,approved,activeLoan} = await api('summary',{nik},{retries:1,cacheBust:force});
-    // TAMPILAN LIMIT — anti NaN
-    const limNum = Number(limit||0);
-    document.getElementById('limitText').textContent = limNum>0 ? idr(limNum) : 'Belum ditetapkan';
-
-    const chip=document.getElementById('statusChip');
-    const badge=document.getElementById('statusBadge');
-    const map={ 'belum':['b-warn','Belum diajukan'],'menunggu':['b-info','Menunggu verifikasi'],'verifikasi':['b-info','Verifikasi Admin'],'disetujui':['b-ok','Disetujui'],'dicairkan':['b-ok','Dicairkan'],'ditolak':['b-warn','Ditolak'],'lunas':['b-ok','Lunas'] };
-    const [cls, text] = map[status] || ['b-warn','Belum diajukan'];
-    chip.className='chip'; chip.textContent=text;
-    badge.className='badge '+cls; badge.textContent=text;
-
-    document.getElementById('btnApply').disabled = !!activeLoan;
-    document.getElementById('blockNote').style.display = activeLoan ? 'block':'none';
-
-    if(['disetujui','dicairkan','lunas'].includes(status) && Number(approved)>0){
-      document.getElementById('approvedWrap').style.display='block';
-      document.getElementById('approvedAmt').textContent = idr(Number(approved));
-    }else{
-      document.getElementById('approvedWrap').style.display='none';
-    }
-  }catch(e){ toast('Gagal memuat beranda: '+e.message); }
+    const data = await api('summary',{nik});
+    save(`cache_home_${nik}`, data);
+    paintHome(data);
+  }catch(e){
+    if(!useCache) toast('Gagal memuat beranda: '+ (e.message||'Failed to fetch'));
+  }
 }
+function paintHome({limit,status,approved,activeLoan}){
+  document.getElementById('limitText').textContent = idr(limit||0);
+  const chip=document.getElementById('statusChip');
+  const badge=document.getElementById('statusBadge');
+  const map={
+    'belum':['b-warn','Belum diajukan'],
+    'menunggu':['b-info','Menunggu verifikasi'],
+    'verifikasi':['b-info','Verifikasi Admin'],
+    'disetujui':['b-ok','Disetujui'],
+    'dicairkan':['b-ok','Dicairkan'],
+    'ditolak':['b-warn','Ditolak'],
+    'lunas':['b-ok','Lunas']
+  };
+  const [cls,text] = map[status] || ['b-warn','Belum diajukan'];
+  chip.className='chip'; chip.textContent=text;
+  badge.className='badge '+cls; badge.textContent=text;
 
+  document.getElementById('btnApply').disabled = !!activeLoan;
+  document.getElementById('blockNote').style.display = activeLoan ? 'block':'none';
+
+  if(['disetujui','dicairkan','lunas'].includes(status) && Number(approved)>0){
+    document.getElementById('approvedWrap').style.display='block';
+    document.getElementById('approvedAmt').textContent = idr(approved);
+  }else{
+    document.getElementById('approvedWrap').style.display='none';
+  }
+}
 async function applyNow(){
   const nik = localStorage.getItem('kbm_nik'); if(!nik) return toast('Belum login');
   try{
-    await api('apply',{nik},{retries:1});
+    await api('apply',{nik});
     toast('Pengajuan terkirim. Menunggu verifikasi admin.');
-    forceRefresh();
-  }catch(e){ toast(e.message); }
+    refreshStatus();
+  }catch(e){ toast(e.message || 'Gagal mengirim pengajuan'); }
 }
+function refreshStatus(){ renderHome(); renderLoans(); }
 
-/* ========= LOANS (andal + cache) ========= */
-async function renderLoans(forceFetch){
+/* LOANS */
+async function renderLoans(useCache=false){
   const nik = localStorage.getItem('kbm_nik'); if(!nik) return;
   const list=document.getElementById('loansList');
-  const empty=document.getElementById('loansEmpty');
-
-  // tampilkan skeleton
-  list.innerHTML='<div class="skeleton"></div><div class="skeleton"></div>';
-  empty.style.display='none';
-
-  // coba cache dulu agar tidak “menghilang”
-  const cacheKey = 'kbm_loans_'+nik;
-  if(!forceFetch){
-    const cache = JSON.parse(localStorage.getItem(cacheKey)||'null');
-    if(cache && Array.isArray(cache) && cache.length){
-      drawLoans(cache);
-    }
+  list.innerHTML='';
+  if(useCache){
+    const c = load(`cache_loans_${nik}`, null);
+    if(c) paintLoans(c.rows||[]);
   }
-
   try{
-    const {rows} = await api('loans',{nik},{retries:2,cacheBust:true});
-    localStorage.setItem(cacheKey, JSON.stringify(rows||[]));
-    drawLoans(rows||[]);
+    const {rows} = await api('loans',{nik});
+    save(`cache_loans_${nik}`, {rows});
+    paintLoans(rows);
   }catch(e){
-    // jika fetch gagal tapi ada cache, diam; jika tidak ada, tampilkan kosong
-    const cache = JSON.parse(localStorage.getItem(cacheKey)||'null') || [];
-    if(cache.length===0){
-      list.innerHTML='';
-      empty.style.display='block';
-    }
-  }
-
-  function drawLoans(rows){
-    list.innerHTML='';
-    if(!rows.length){ empty.style.display='block'; return; }
-    empty.style.display='none';
-    rows.forEach(a=>{
-      const tag = a.status==='ditolak'?'b-warn':(['disetujui','dicairkan','lunas'].includes(a.status)?'b-ok':'b-info');
-      const t = a.ts ? new Date(a.ts).toLocaleString('id-ID',{dateStyle:'medium', timeStyle:'short'}) : '-';
-      const approved = a.approved? `<div class="muted">Disetujui: <b>${idr(a.approved)}</b></div>` : '';
-      const div=document.createElement('div');
-      div.style.cssText='display:flex;justify-content:space-between;align-items:center;border:1px solid #E6F1FC;border-radius:14px;padding:12px;background:#F7FBFF';
-      div.innerHTML=`<div><div style="font-weight:900">Pengajuan ${a.period||''}</div><div class="muted">${t}</div>${approved}</div><span class="badge ${tag}">${a.status}</span>`;
-      list.appendChild(div);
-    });
+    if(!useCache) toast('Gagal memuat pinjaman: '+(e.message||'Failed to fetch'));
   }
 }
+function paintLoans(rows){
+  const list=document.getElementById('loansList');
+  list.innerHTML='';
+  if(!rows.length){
+    const emp=document.createElement('div'); emp.className='muted'; emp.textContent='Belum ada pengajuan.';
+    list.appendChild(emp); return;
+  }
+  rows.forEach(a=>{
+    const status=(a.status||'menunggu').toLowerCase();
+    const tag = status==='ditolak'?'b-warn':(['disetujui','dicairkan','lunas'].includes(status)?'b-ok':'b-info');
+    const t = new Date(a.ts).toLocaleString('id-ID',{dateStyle:'medium', timeStyle:'short'});
+    const approved = a.approved? `<div class="muted">Disetujui: <b>${idr(a.approved)}</b></div>` : '';
+    const div=document.createElement('div');
+    div.style.cssText='display:flex;justify-content:space-between;align-items:center;border:1px solid #E6F1FC;border-radius:14px;padding:12px;background:#F7FBFF';
+    div.innerHTML=`<div><div style="font-weight:900">Pengajuan ${a.period||''}</div><div class="muted">${t}</div>${approved}</div><span class="badge ${tag}">${status}</span>`;
+    list.appendChild(div);
+  });
+}
 
-/* ========= ACCOUNT ========= */
+/* ACCOUNT */
 async function renderAccount(){
   const nik = localStorage.getItem('kbm_nik'); if(!nik) return;
   try{
-    const {profile:p} = await api('profile.get',{nik},{retries:1});
+    const {profile:p} = await api('profile.get',{nik});
     document.getElementById('accName').textContent = p.nama || 'Karyawan';
     document.getElementById('accId').textContent = `NIK ${mask(p.nik)} • NIP ${mask(p.nip)}`;
     document.getElementById('avatar').src = p.photo || 'data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><rect width=%22128%22 height=%22128%22 rx=%2264%22 fill=%2316A9FF/><circle cx=%2264%22 cy=%2248%22 r=%2228%22 fill=%23E6F7FF/><rect x=%2220%22 y=%2276%22 width=%2288%22 height=%2238%22 rx=%2219%22 fill=%23CFF0FF/></svg>';
@@ -496,9 +490,8 @@ async function renderAccount(){
     document.getElementById('p_tgl').value    = p.tgl || '';
     document.getElementById('p_alamat').value = p.alamat || '';
     document.getElementById('p_hp').value     = p.phone || '';
-  }catch(e){ toast('Gagal memuat profil: '+e.message); }
+  }catch(e){ toast(e.message || 'Gagal memuat profil'); }
 }
-
 async function saveProfile(){
   const nik = localStorage.getItem('kbm_nik'); if(!nik) return;
   const fields = {
@@ -511,12 +504,12 @@ async function saveProfile(){
     alamat:document.getElementById('p_alamat').value.trim()
   };
   try{
-    await api('profile.save',{nik, fields},{retries:1});
-    const ok=document.getElementById('saveOk'); ok.style.display='block'; setTimeout(()=>ok.style.display='none',1500);
+    await api('profile.save',{nik, fields});
+    document.getElementById('saveOk').style.display='block';
+    setTimeout(()=> document.getElementById('saveOk').style.display='none', 1500);
     renderAccount();
-  }catch(e){ toast('Gagal simpan: '+e.message); }
+  }catch(e){ toast(e.message || 'Gagal menyimpan profil'); }
 }
-
 function onPhoto(e){
   const f=e.target.files[0]; if(!f) return;
   const r=new FileReader();
@@ -528,17 +521,17 @@ function onPhoto(e){
       ctx.drawImage(img,sx,sy,m,m,0,0,s,s);
       const data=c.toDataURL('image/jpeg',.85);
       const nik=localStorage.getItem('kbm_nik');
-      api('profile.save',{nik, fields:{photo:data}},{retries:1})
+      api('profile.save',{nik, fields:{photo:data}})
         .then(()=> { document.getElementById('avatar').src=data; })
-        .catch(e=>toast('Gagal upload: '+e.message));
+        .catch(e=>toast(e.message||'Gagal menyimpan foto'));
     }; img.src=r.result;
   }; r.readAsDataURL(f); e.target.value='';
 }
 function removePhoto(){
   const nik=localStorage.getItem('kbm_nik'); if(!nik) return;
-  api('profile.save',{nik, fields:{photo:''}},{retries:1})
+  api('profile.save',{nik, fields:{photo:''}})
     .then(()=> renderAccount())
-    .catch(e=>toast('Gagal hapus foto: '+e.message));
+    .catch(e=>toast(e.message||'Gagal menghapus foto'));
 }
 </script>
 </body>
