@@ -43,12 +43,12 @@
   .brand{display:flex; align-items:center; gap:10px; font-weight:900}
   .badge-pill{font-weight:800; background:rgba(255,255,255,.3); padding:6px 10px; border-radius:999px}
 
-  /* Card & text */
+  /* Cards */
   .card{background:#fff; border:1px solid var(--line); border-radius:var(--radius-lg); box-shadow:0 18px 40px rgba(31,97,171,.12); padding:16px; margin:14px 0}
   .title{font-weight:900; margin-bottom:8px}
   .muted{color:var(--muted); font-weight:600}
 
-  /* Inputs & buttons */
+  /* Inputs & Buttons */
   label{font-size:.92rem; color:#1B3C63; font-weight:700}
   input,textarea,select{width:100%; padding:13px 14px; border-radius:14px; border:1px solid var(--line); background:#F7FBFF; color:#083356}
   input:focus,textarea:focus,select:focus{outline:none; border-color:#9AD9FF; box-shadow:0 0 0 3px rgba(0,160,255,.15)}
@@ -61,7 +61,7 @@
   .grid2{display:grid; grid-template-columns:1fr 1fr; gap:10px}
   @media(max-width:460px){ .grid2{grid-template-columns:1fr} }
 
-  /* View */
+  /* Views */
   .view{display:none} .view.active{display:block}
   .fade{animation:fade .25s ease both} @keyframes fade{from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none}}
 
@@ -93,13 +93,12 @@
   .ticker:hover > div{animation-play-state:paused}
   @keyframes ticker { 0% { transform: translateX(0) } 100% { transform: translateX(-100%) } }
 
-  /* Footer */
   .foot{margin:18px 0 8px; text-align:center; color:#6A88AA; font-weight:700; font-size:.86rem}
 </style>
 </head>
 <body>
 
-<!-- BG parallax -->
+<!-- BG -->
 <div class="bg-wrap"><div class="bg-blob b1"></div><div class="bg-blob b2"></div><div class="bg-blob b3"></div></div>
 
 <!-- SPLASH -->
@@ -111,7 +110,7 @@
 
 <div class="app">
 
-  <!-- ===== AUTH ===== -->
+  <!-- AUTH -->
   <section id="auth" class="view active fade">
     <div class="appbar">
       <div class="appbar-inner">
@@ -147,7 +146,7 @@
     </div>
   </section>
 
-  <!-- ===== APP ===== -->
+  <!-- APP -->
   <section id="appView" class="view">
     <div class="appbar">
       <div class="appbar-inner">
@@ -155,6 +154,7 @@
         <div class="badge-pill">Periode <span id="period">2025</span></div>
       </div>
 
+      <!-- Top menu -->
       <div class="topmenu">
         <div class="menu-row">
           <div class="menu-item" onclick="switchTab('home')">
@@ -186,7 +186,7 @@
       </div>
     </div>
 
-    <!-- ===== HOME ===== -->
+    <!-- HOME -->
     <section id="home" class="view active fade">
       <div class="card hero">
         <div class="row" style="justify-content:space-between">
@@ -233,13 +233,13 @@
       <div class="foot">Version 1.0.0 • Crafted by Anggara Pradana</div>
     </section>
 
-    <!-- ===== LOANS ===== -->
+    <!-- LOANS -->
     <section id="loans" class="view fade">
       <div class="card"><div class="title">Daftar Pengajuan</div><div id="loansList" style="display:grid; gap:10px"></div></div>
       <div class="foot">Version 1.0.0 • Crafted by Anggara Pradana</div>
     </section>
 
-    <!-- ===== ACCOUNT ===== -->
+    <!-- ACCOUNT -->
     <section id="account" class="view fade">
       <div class="card">
         <div class="title">Akun Karyawan</div>
@@ -278,7 +278,7 @@
       <div class="foot">Version 1.0.0 • Crafted by Anggara Pradana</div>
     </section>
 
-    <!-- ===== SETTINGS ===== -->
+    <!-- SETTINGS -->
     <section id="settings" class="view fade">
       <div class="card">
         <div class="title">Pengaturan</div>
@@ -292,7 +292,7 @@
       <div class="foot">Version 1.0.0 • Crafted by Anggara Pradana</div>
     </section>
 
-    <!-- ===== INBOX ===== -->
+    <!-- INBOX -->
     <section id="inbox" class="view fade">
       <div class="card"><div class="title">Inbox</div><div class="muted">Notifikasi dari koperasi akan tampil di sini.</div></div>
       <div class="foot">Version 1.0.0 • Crafted by Anggara Pradana</div>
@@ -302,44 +302,41 @@
 </div>
 
 <script>
-/* === KONFIG API === */
+/* ===== KONFIG API ===== */
 const API_BASE = 'https://script.google.com/macros/s/AKfycbz1_yKXS0xjAyKMg9vXOb5-KcY0xL3NySeSZw0eqS1NGC25LJdjgUAtLNp07SQo6J2eZQ/exec';
 
-/* === UTIL === */
+/* ===== UTIL ===== */
 const idr=n=>new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(n);
 const mask=(s,k=4)=> s ? s.slice(0,k)+'*'.repeat(Math.max(0,s.length-k-2))+s.slice(-2) : '-';
-const toast=(m)=>alert(m);
+function toast(msg){ alert(msg); }
 
-// fetch helper + timeout
-async function api(action, payload={}){
-  const ctrl = new AbortController();
-  const t = setTimeout(()=>ctrl.abort(), 15000); // 15s
-  let res;
+/* fetch helper: timeout + retry */
+async function api(action, payload={}, {retries=1, timeout=12000} = {}){
+  const controller = new AbortController();
+  const t = setTimeout(()=>controller.abort(), timeout);
   try{
-    res = await fetch(API_BASE, {
+    const r = await fetch(API_BASE, {
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({action, ...payload}),
-      signal: ctrl.signal
+      body: JSON.stringify({action, ...payload}),
+      signal: controller.signal,
     });
-  }catch(e){
-    throw new Error('Gagal menghubungkan server. Cek internet atau URL Web App.');
-  } finally { clearTimeout(t); }
-
-  let j;
-  try{ j = await res.json(); }catch{ throw new Error('Respon server bukan JSON.'); }
-  if(!j.ok) throw new Error(j.error || 'Gagal');
-  return j;
+    clearTimeout(t);
+    let j=null;
+    try{ j = await r.json(); }catch{ throw new Error('Respon server bukan JSON'); }
+    if(!j.ok) throw new Error(j.error || 'Gagal');
+    return j;
+  }catch(err){
+    clearTimeout(t);
+    if(retries>0) return api(action, payload, {retries:retries-1, timeout});
+    throw new Error('Gagal menghubungkan server. '+(err.message||''));
+  }
 }
 
-/* PING saat load untuk deteksi cepat */
-window.addEventListener('load', async ()=>{
-  setTimeout(()=> document.getElementById('splash').classList.add('fade-out'), 600);
-  try{ await api('ping'); }
-  catch(e){ toast('API tidak dapat diakses. Pastikan Web App /exec aktif.\n\nError: '+e.message); }
-});
+/* Splash */
+window.addEventListener('load',()=>{ setTimeout(()=> document.getElementById('splash').classList.add('fade-out'), 600); });
 
-/* AUTH */
+/* Auth toggle */
 function switchAuth(mode){
   const L=document.getElementById('formLogin'), R=document.getElementById('formReg');
   if(mode==='reg'){ L.style.display='none'; R.style.display='block'; }
@@ -347,11 +344,13 @@ function switchAuth(mode){
 }
 if(localStorage.getItem('kbm_auth')==='1'){ openApp(); }
 
+/* Register */
 async function doSignup(){
   const nik=document.getElementById('r_nik').value.trim();
   const nip=document.getElementById('r_nip').value.trim();
   const nama=document.getElementById('r_nama').value.trim();
   const phone=document.getElementById('r_hp').value.trim();
+  if(!/^\d{16}$/.test(nik)) return toast('NIK harus 16 digit.');
   try{
     await api('register',{nik,nip,nama,phone});
     toast('Pendaftaran berhasil. Silakan login.');
@@ -359,6 +358,7 @@ async function doSignup(){
   }catch(e){ toast(e.message); }
 }
 
+/* Login */
 async function doLogin(){
   const nik=document.getElementById('nik').value.trim();
   const nip=document.getElementById('nip').value.trim();
@@ -371,13 +371,12 @@ async function doLogin(){
     openApp();
   }catch(e){ toast(e.message); }
 }
-
 function logout(){
   localStorage.removeItem('kbm_auth'); localStorage.removeItem('kbm_nik'); localStorage.removeItem('kbm_name');
   location.reload();
 }
 
-/* APP NAV */
+/* Open App & Tabs */
 function openApp(){
   document.getElementById('auth').classList.remove('active');
   document.getElementById('auth').style.display='none';
@@ -423,10 +422,9 @@ async function renderHome(){
     }else{
       document.getElementById('approvedWrap').style.display='none';
     }
-    document.getElementById('instWrap').style.display='none'; // cicilan nonaktif dulu
+    document.getElementById('instWrap').style.display='none';
   }catch(e){ toast(e.message); }
 }
-
 async function applyNow(){
   const nik = localStorage.getItem('kbm_nik'); if(!nik) return toast('Belum login');
   try{
@@ -476,7 +474,6 @@ async function renderAccount(){
     document.getElementById('p_hp').value     = p.phone || '';
   }catch(e){ toast(e.message); }
 }
-
 async function saveProfile(){
   const nik = localStorage.getItem('kbm_nik'); if(!nik) return;
   const fields = {
@@ -495,7 +492,6 @@ async function saveProfile(){
     renderAccount();
   }catch(e){ toast(e.message); }
 }
-
 function onPhoto(e){
   const f=e.target.files[0]; if(!f) return;
   const r=new FileReader();
