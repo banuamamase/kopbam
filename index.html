@@ -27,28 +27,23 @@
   .b3{background:radial-gradient(closest-side at 30% 0%, #B0F1FF, transparent 60%)}
   .app{width:min(520px,100%); margin:0 auto; padding:0 14px 100px}
 
-  /* Logo */
   .logo{width:28px; height:28px; object-fit:contain; border-radius:8px; display:block}
   .logo-xl{width:64px; height:64px; object-fit:contain; border-radius:14px; display:block}
 
-  /* Splash */
   .splash{position:fixed; inset:0; display:grid; place-items:center; background:linear-gradient(135deg,#08B3FF 0%,#1AC8FF 50%,#4DDCFF 100%); z-index:99}
   .splash-logo{display:flex; align-items:center; gap:12px; color:#fff; font-weight:900; font-size:1.1rem}
   .fade-out{animation:fadeout .45s ease both}
   @keyframes fadeout{to{opacity:0; visibility:hidden}}
 
-  /* Appbar */
   .appbar{position:sticky; top:0; z-index:10; background:linear-gradient(180deg,#0EB6FE 0%, #199AFF 100%); color:#fff; border-radius:0 0 14px 14px; box-shadow:0 10px 30px rgba(0,0,0,.12)}
   .appbar-inner{display:flex; align-items:center; justify-content:space-between; padding:14px}
   .brand{display:flex; align-items:center; gap:10px; font-weight:900}
   .badge-pill{font-weight:800; background:rgba(255,255,255,.3); padding:6px 10px; border-radius:999px}
 
-  /* Cards */
   .card{background:#fff; border:1px solid var(--line); border-radius:var(--radius-lg); box-shadow:0 18px 40px rgba(31,97,171,.12); padding:16px; margin:14px 0}
   .title{font-weight:900; margin-bottom:8px}
   .muted{color:var(--muted); font-weight:600}
 
-  /* Inputs & Buttons */
   label{font-size:.92rem; color:#1B3C63; font-weight:700}
   input,textarea,select{width:100%; padding:13px 14px; border-radius:14px; border:1px solid var(--line); background:#F7FBFF; color:#083356}
   input:focus,textarea:focus,select:focus{outline:none; border-color:#9AD9FF; box-shadow:0 0 0 3px rgba(0,160,255,.15)}
@@ -61,11 +56,9 @@
   .grid2{display:grid; grid-template-columns:1fr 1fr; gap:10px}
   @media(max-width:460px){ .grid2{grid-template-columns:1fr} }
 
-  /* Views */
   .view{display:none} .view.active{display:block}
   .fade{animation:fade .25s ease both} @keyframes fade{from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none}}
 
-  /* Top menu */
   .topmenu{padding:12px 14px}
   .menu-row{display:grid; grid-template-columns:repeat(5,1fr); gap:10px}
   .menu-item{display:flex; flex-direction:column; align-items:center; text-align:center}
@@ -73,19 +66,16 @@
   .ico-wrap svg{width:28px; height:28px}
   .mname{font-size:.85rem; font-weight:800; margin-top:6px; color:#0E2E4B}
 
-  /* Hero */
   .hero{position:relative; padding:18px; border-radius:22px; overflow:hidden; background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(255,255,255,.84)); border:1px solid #E6F1FC}
   .hero .big{font-size:1.9rem; font-weight:900; color:#0A2035}
   .chip{display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px; background:var(--chip); font-weight:800; color:#1C3B5A; border:1px solid #D8E9FF}
 
-  /* Badges */
   .badge{display:inline-flex; gap:8px; align-items:center; padding:8px 12px; border-radius:999px; font-weight:800}
   .b-ok{background:#E6FFF6; color:#066A4C; border:1px solid #BDF0E2}
   .b-warn{background:#FFF5E6; color:#7A4B02; border:1px solid #FFE0B0}
   .b-info{background:#EEF7FF; color:#14446E; border:1px solid #CDE5FF}
   .b-bad{background:#FFECEB; color:#7A1C1C; border:1px solid #FFC9C6}
 
-  /* Ticker */
   .ticker-card{padding:0; overflow:hidden}
   .ticker-head{display:flex; align-items:center; gap:8px; padding:10px 12px; border-bottom:1px solid #E6F1FC; color:#0B3B64; font-weight:900}
   .ticker{white-space:nowrap; overflow:hidden; padding:10px 0; background:linear-gradient(90deg, rgba(0,0,0,0), rgba(0,0,0,.02) 50%, rgba(0,0,0,0))}
@@ -154,7 +144,6 @@
         <div class="badge-pill">Periode <span id="period">2025</span></div>
       </div>
 
-      <!-- Top menu -->
       <div class="topmenu">
         <div class="menu-row">
           <div class="menu-item" onclick="switchTab('home')">
@@ -302,24 +291,24 @@
 </div>
 
 <script>
-/* ===== KONFIG API ===== */
+/* === KONFIG API === */
 const API_BASE = 'https://script.google.com/macros/s/AKfycbz1_yKXS0xjAyKMg9vXOb5-KcY0xL3NySeSZw0eqS1NGC25LJdjgUAtLNp07SQo6J2eZQ/exec';
 
-/* ===== UTIL ===== */
+/* === UTIL === */
 const idr=n=>new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(n);
 const mask=(s,k=4)=> s ? s.slice(0,k)+'*'.repeat(Math.max(0,s.length-k-2))+s.slice(-2) : '-';
 function toast(msg){ alert(msg); }
 
-/* fetch helper: timeout + retry */
+/* fetch helper TANPA preflight (kunci anti-FAILED TO FETCH) */
 async function api(action, payload={}, {retries=1, timeout=12000} = {}){
   const controller = new AbortController();
   const t = setTimeout(()=>controller.abort(), timeout);
   try{
     const r = await fetch(API_BASE, {
       method:'POST',
-      headers:{'Content-Type':'application/json'},
+      headers:{ 'Content-Type':'text/plain;charset=utf-8' }, // simple request → no preflight
       body: JSON.stringify({action, ...payload}),
-      signal: controller.signal,
+      signal: controller.signal
     });
     clearTimeout(t);
     let j=null;
@@ -329,14 +318,14 @@ async function api(action, payload={}, {retries=1, timeout=12000} = {}){
   }catch(err){
     clearTimeout(t);
     if(retries>0) return api(action, payload, {retries:retries-1, timeout});
-    throw new Error('Gagal menghubungkan server. '+(err.message||''));
+    throw new Error('Gagal menghubungkan server. ' + (err.message||''));
   }
 }
 
-/* Splash */
+/* SPLASH */
 window.addEventListener('load',()=>{ setTimeout(()=> document.getElementById('splash').classList.add('fade-out'), 600); });
 
-/* Auth toggle */
+/* AUTH */
 function switchAuth(mode){
   const L=document.getElementById('formLogin'), R=document.getElementById('formReg');
   if(mode==='reg'){ L.style.display='none'; R.style.display='block'; }
@@ -344,13 +333,11 @@ function switchAuth(mode){
 }
 if(localStorage.getItem('kbm_auth')==='1'){ openApp(); }
 
-/* Register */
 async function doSignup(){
   const nik=document.getElementById('r_nik').value.trim();
   const nip=document.getElementById('r_nip').value.trim();
   const nama=document.getElementById('r_nama').value.trim();
   const phone=document.getElementById('r_hp').value.trim();
-  if(!/^\d{16}$/.test(nik)) return toast('NIK harus 16 digit.');
   try{
     await api('register',{nik,nip,nama,phone});
     toast('Pendaftaran berhasil. Silakan login.');
@@ -358,7 +345,6 @@ async function doSignup(){
   }catch(e){ toast(e.message); }
 }
 
-/* Login */
 async function doLogin(){
   const nik=document.getElementById('nik').value.trim();
   const nip=document.getElementById('nip').value.trim();
@@ -371,12 +357,13 @@ async function doLogin(){
     openApp();
   }catch(e){ toast(e.message); }
 }
+
 function logout(){
   localStorage.removeItem('kbm_auth'); localStorage.removeItem('kbm_nik'); localStorage.removeItem('kbm_name');
   location.reload();
 }
 
-/* Open App & Tabs */
+/* NAV */
 function openApp(){
   document.getElementById('auth').classList.remove('active');
   document.getElementById('auth').style.display='none';
@@ -425,6 +412,7 @@ async function renderHome(){
     document.getElementById('instWrap').style.display='none';
   }catch(e){ toast(e.message); }
 }
+
 async function applyNow(){
   const nik = localStorage.getItem('kbm_nik'); if(!nik) return toast('Belum login');
   try{
@@ -474,6 +462,7 @@ async function renderAccount(){
     document.getElementById('p_hp').value     = p.phone || '';
   }catch(e){ toast(e.message); }
 }
+
 async function saveProfile(){
   const nik = localStorage.getItem('kbm_nik'); if(!nik) return;
   const fields = {
@@ -492,6 +481,7 @@ async function saveProfile(){
     renderAccount();
   }catch(e){ toast(e.message); }
 }
+
 function onPhoto(e){
   const f=e.target.files[0]; if(!f) return;
   const r=new FileReader();
