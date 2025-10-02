@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-<title>KOPBAM • App</title>
+<title>KOPBAM • Demo</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
@@ -27,41 +27,45 @@
   .b3{background:radial-gradient(closest-side at 30% 0%, #B0F1FF, transparent 60%)}
   .app{width:min(520px,100%); margin:0 auto; padding:0 14px 100px}
 
+  /* Logo */
   .logo{width:28px; height:28px; object-fit:contain; border-radius:8px; display:block}
   .logo-xl{width:64px; height:64px; object-fit:contain; border-radius:14px; display:block}
 
+  /* Splash */
   .splash{position:fixed; inset:0; display:grid; place-items:center; background:linear-gradient(135deg,#08B3FF 0%,#1AC8FF 50%,#4DDCFF 100%); z-index:99}
   .splash-logo{display:flex; align-items:center; gap:12px; color:#fff; font-weight:900; font-size:1.1rem}
   .fade-out{animation:fadeout .45s ease both}
   @keyframes fadeout{to{opacity:0; visibility:hidden}}
 
+  /* Appbar */
   .appbar{position:sticky; top:0; z-index:10; background:linear-gradient(180deg,#0EB6FE 0%, #199AFF 100%); color:#fff; border-radius:0 0 14px 14px; box-shadow:0 10px 30px rgba(0,0,0,.12)}
   .appbar-inner{display:flex; align-items:center; justify-content:space-between; padding:14px}
   .brand{display:flex; align-items:center; gap:10px; font-weight:900}
   .badge-pill{font-weight:800; background:rgba(255,255,255,.3); padding:6px 10px; border-radius:999px}
 
+  /* Card & text */
   .card{background:#fff; border:1px solid var(--line); border-radius:var(--radius-lg); box-shadow:0 18px 40px rgba(31,97,171,.12); padding:16px; margin:14px 0}
   .title{font-weight:900; margin-bottom:8px}
   .muted{color:var(--muted); font-weight:600}
 
+  /* Inputs & buttons */
   label{font-size:.92rem; color:#1B3C63; font-weight:700}
   input,textarea,select{width:100%; padding:13px 14px; border-radius:14px; border:1px solid var(--line); background:#F7FBFF; color:#083356}
   input:focus,textarea:focus,select:focus{outline:none; border-color:#9AD9FF; box-shadow:0 0 0 3px rgba(0,160,255,.15)}
-
-  .btn{display:inline-flex; align-items:center; justify-content:center; gap:10px; padding:13px 16px; border-radius:999px; border:1px solid rgba(0,0,0,.04); cursor:pointer; font-weight:900; transition:opacity .15s}
-  .btn[disabled]{opacity:.55; cursor:not-allowed}
-  .btn.loading{opacity:.7; pointer-events:none}
-
+  .btn{display:inline-flex; align-items:center; justify-content:center; gap:10px; padding:13px 16px; border-radius:999px; border:1px solid rgba(0,0,0,.04); cursor:pointer; font-weight:900}
   .btn-primary{background:linear-gradient(180deg, #48D3FF 0%, #0EA5E9 100%); color:#05263C; box-shadow:0 12px 30px rgba(14,165,233,.35)}
   .btn-ghost{background:#fff; color:#0F2F49; border:1px solid #D7E8F9}
+  .btn[disabled]{opacity:.55; cursor:not-allowed}
 
   .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
   .grid2{display:grid; grid-template-columns:1fr 1fr; gap:10px}
   @media(max-width:460px){ .grid2{grid-template-columns:1fr} }
 
+  /* View */
   .view{display:none} .view.active{display:block}
   .fade{animation:fade .25s ease both} @keyframes fade{from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none}}
 
+  /* Top menu */
   .topmenu{padding:12px 14px}
   .menu-row{display:grid; grid-template-columns:repeat(5,1fr); gap:10px}
   .menu-item{display:flex; flex-direction:column; align-items:center; text-align:center}
@@ -69,16 +73,19 @@
   .ico-wrap svg{width:28px; height:28px}
   .mname{font-size:.85rem; font-weight:800; margin-top:6px; color:#0E2E4B}
 
+  /* Hero */
   .hero{position:relative; padding:18px; border-radius:22px; overflow:hidden; background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(255,255,255,.84)); border:1px solid #E6F1FC}
   .hero .big{font-size:1.9rem; font-weight:900; color:#0A2035}
   .chip{display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px; background:var(--chip); font-weight:800; color:#1C3B5A; border:1px solid #D8E9FF}
 
+  /* Badges */
   .badge{display:inline-flex; gap:8px; align-items:center; padding:8px 12px; border-radius:999px; font-weight:800}
   .b-ok{background:#E6FFF6; color:#066A4C; border:1px solid #BDF0E2}
   .b-warn{background:#FFF5E6; color:#7A4B02; border:1px solid #FFE0B0}
   .b-info{background:#EEF7FF; color:#14446E; border:1px solid #CDE5FF}
   .b-bad{background:#FFECEB; color:#7A1C1C; border:1px solid #FFC9C6}
 
+  /* Ticker */
   .ticker-card{padding:0; overflow:hidden}
   .ticker-head{display:flex; align-items:center; gap:8px; padding:10px 12px; border-bottom:1px solid #E6F1FC; color:#0B3B64; font-weight:900}
   .ticker{white-space:nowrap; overflow:hidden; padding:10px 0; background:linear-gradient(90deg, rgba(0,0,0,0), rgba(0,0,0,.02) 50%, rgba(0,0,0,0))}
@@ -86,12 +93,13 @@
   .ticker:hover > div{animation-play-state:paused}
   @keyframes ticker { 0% { transform: translateX(0) } 100% { transform: translateX(-100%) } }
 
+  /* Footer */
   .foot{margin:18px 0 8px; text-align:center; color:#6A88AA; font-weight:700; font-size:.86rem}
 </style>
 </head>
 <body>
 
-<!-- BG -->
+<!-- BG parallax -->
 <div class="bg-wrap"><div class="bg-blob b1"></div><div class="bg-blob b2"></div><div class="bg-blob b3"></div></div>
 
 <!-- SPLASH -->
@@ -103,7 +111,7 @@
 
 <div class="app">
 
-  <!-- AUTH -->
+  <!-- ===== AUTH ===== -->
   <section id="auth" class="view active fade">
     <div class="appbar">
       <div class="appbar-inner">
@@ -120,7 +128,7 @@
         <label style="margin-top:8px">NIP</label>
         <input id="nip" inputmode="numeric" placeholder="NIP Karyawan RSBM" required>
         <div class="row" style="margin-top:12px">
-          <button id="btnLogin" class="btn btn-primary" type="submit">Masuk</button>
+          <button class="btn btn-primary" type="submit">Masuk</button>
           <button class="btn btn-ghost" type="button" onclick="switchAuth('reg')">Buat akun</button>
         </div>
       </form>
@@ -133,13 +141,13 @@
         <label style="margin-top:8px">Nomor HP</label><input id="r_hp" inputmode="numeric" placeholder="62xxxxxxxxx" required>
         <div class="row" style="margin-top:12px">
           <button class="btn btn-ghost" type="button" onclick="switchAuth('login')">Batal</button>
-          <button id="btnReg" class="btn btn-primary" type="submit">Daftar</button>
+          <button class="btn btn-primary" type="submit">Daftar</button>
         </div>
       </form>
     </div>
   </section>
 
-  <!-- APP -->
+  <!-- ===== APP ===== -->
   <section id="appView" class="view">
     <div class="appbar">
       <div class="appbar-inner">
@@ -178,7 +186,7 @@
       </div>
     </div>
 
-    <!-- HOME -->
+    <!-- ===== HOME ===== -->
     <section id="home" class="view active fade">
       <div class="card hero">
         <div class="row" style="justify-content:space-between">
@@ -225,13 +233,13 @@
       <div class="foot">Version 1.0.0 • Crafted by Anggara Pradana</div>
     </section>
 
-    <!-- LOANS -->
+    <!-- ===== LOANS ===== -->
     <section id="loans" class="view fade">
       <div class="card"><div class="title">Daftar Pengajuan</div><div id="loansList" style="display:grid; gap:10px"></div></div>
       <div class="foot">Version 1.0.0 • Crafted by Anggara Pradana</div>
     </section>
 
-    <!-- ACCOUNT -->
+    <!-- ===== ACCOUNT ===== -->
     <section id="account" class="view fade">
       <div class="card">
         <div class="title">Akun Karyawan</div>
@@ -270,7 +278,7 @@
       <div class="foot">Version 1.0.0 • Crafted by Anggara Pradana</div>
     </section>
 
-    <!-- SETTINGS -->
+    <!-- ===== SETTINGS ===== -->
     <section id="settings" class="view fade">
       <div class="card">
         <div class="title">Pengaturan</div>
@@ -284,7 +292,7 @@
       <div class="foot">Version 1.0.0 • Crafted by Anggara Pradana</div>
     </section>
 
-    <!-- INBOX -->
+    <!-- ===== INBOX ===== -->
     <section id="inbox" class="view fade">
       <div class="card"><div class="title">Inbox</div><div class="muted">Notifikasi dari koperasi akan tampil di sini.</div></div>
       <div class="foot">Version 1.0.0 • Crafted by Anggara Pradana</div>
@@ -294,39 +302,44 @@
 </div>
 
 <script>
-/* ============ KONFIG API ============ */
-const API_BASE = 'https://script.google.com/macros/s/AKfycbzki4lmThKwfY3T55wI5IOkifrVTmwvshTMn43_zyfX/exec';
+/* === KONFIG API === */
+const API_BASE = 'https://script.google.com/macros/s/AKfycbz1_yKXS0xjAyKMg9vXOb5-KcY0xL3NySeSZw0eqS1NGC25LJdjgUAtLNp07SQo6J2eZQ/exec';
 
-/* ============ UTIL ============ */
-const idr = n => new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(n);
-const mask = (s,k=4)=> s ? s.slice(0,k)+'*'.repeat(Math.max(0,s.length-k-2))+s.slice(-2) : '-';
-const sleep = ms => new Promise(r=>setTimeout(r,ms));
-function toast(msg){ alert(msg); }
+/* === UTIL === */
+const idr=n=>new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(n);
+const mask=(s,k=4)=> s ? s.slice(0,k)+'*'.repeat(Math.max(0,s.length-k-2))+s.slice(-2) : '-';
+const toast=(m)=>alert(m);
 
-async function api(action, payload={}, timeoutMs=12000){
+// fetch helper + timeout
+async function api(action, payload={}){
   const ctrl = new AbortController();
-  const t = setTimeout(()=>ctrl.abort(), timeoutMs);
+  const t = setTimeout(()=>ctrl.abort(), 15000); // 15s
+  let res;
   try{
-    const res = await fetch(API_BASE, {
+    res = await fetch(API_BASE, {
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({action, ...payload}),
+      body:JSON.stringify({action, ...payload}),
       signal: ctrl.signal
     });
-    let data;
-    try{ data = await res.json(); }catch{ throw new Error('Respon server bukan JSON'); }
-    if(!data.ok) throw new Error(data.error || 'Gagal');
-    return data;
   }catch(e){
-    if(e.name === 'AbortError') throw new Error('Koneksi timeout. Coba lagi.');
-    throw e;
-  }finally{ clearTimeout(t); }
+    throw new Error('Gagal menghubungkan server. Cek internet atau URL Web App.');
+  } finally { clearTimeout(t); }
+
+  let j;
+  try{ j = await res.json(); }catch{ throw new Error('Respon server bukan JSON.'); }
+  if(!j.ok) throw new Error(j.error || 'Gagal');
+  return j;
 }
 
-/* ============ SPLASH ============ */
-window.addEventListener('load',()=>{ setTimeout(()=> document.getElementById('splash').classList.add('fade-out'), 600); });
+/* PING saat load untuk deteksi cepat */
+window.addEventListener('load', async ()=>{
+  setTimeout(()=> document.getElementById('splash').classList.add('fade-out'), 600);
+  try{ await api('ping'); }
+  catch(e){ toast('API tidak dapat diakses. Pastikan Web App /exec aktif.\n\nError: '+e.message); }
+});
 
-/* ============ AUTH ============ */
+/* AUTH */
 function switchAuth(mode){
   const L=document.getElementById('formLogin'), R=document.getElementById('formReg');
   if(mode==='reg'){ L.style.display='none'; R.style.display='block'; }
@@ -339,19 +352,16 @@ async function doSignup(){
   const nip=document.getElementById('r_nip').value.trim();
   const nama=document.getElementById('r_nama').value.trim();
   const phone=document.getElementById('r_hp').value.trim();
-  const btn=document.getElementById('btnReg'); btn.classList.add('loading'); btn.disabled=true;
   try{
     await api('register',{nik,nip,nama,phone});
     toast('Pendaftaran berhasil. Silakan login.');
     switchAuth('login');
   }catch(e){ toast(e.message); }
-  finally{ btn.classList.remove('loading'); btn.disabled=false; }
 }
 
 async function doLogin(){
   const nik=document.getElementById('nik').value.trim();
   const nip=document.getElementById('nip').value.trim();
-  const btn=document.getElementById('btnLogin'); btn.classList.add('loading'); btn.disabled=true;
   try{
     const res = await api('login',{nik,nip});
     const u = res.user;
@@ -360,7 +370,6 @@ async function doLogin(){
     localStorage.setItem('kbm_name', u.nama || 'Karyawan');
     openApp();
   }catch(e){ toast(e.message); }
-  finally{ btn.classList.remove('loading'); btn.disabled=false; }
 }
 
 function logout(){
@@ -368,7 +377,7 @@ function logout(){
   location.reload();
 }
 
-/* ============ NAV ============ */
+/* APP NAV */
 function openApp(){
   document.getElementById('auth').classList.remove('active');
   document.getElementById('auth').style.display='none';
@@ -384,7 +393,7 @@ function switchTab(id){
   if(id==='account') renderAccount();
 }
 
-/* ============ HOME ============ */
+/* HOME */
 async function renderHome(){
   const nik = localStorage.getItem('kbm_nik'); if(!nik) return;
   try{
@@ -401,9 +410,9 @@ async function renderHome(){
       'ditolak':['b-warn','Ditolak'],
       'lunas':['b-ok','Lunas']
     };
-    const arr = map[status] || ['b-warn','Belum diajukan'];
-    chip.className='chip'; chip.textContent=arr[1];
-    badge.className='badge '+arr[0]; badge.textContent=arr[1];
+    const [cls, text] = map[status] || ['b-warn','Belum diajukan'];
+    chip.className='chip'; chip.textContent=text;
+    badge.className='badge '+cls; badge.textContent=text;
 
     document.getElementById('btnApply').disabled = !!activeLoan;
     document.getElementById('blockNote').style.display = activeLoan ? 'block':'none';
@@ -414,23 +423,21 @@ async function renderHome(){
     }else{
       document.getElementById('approvedWrap').style.display='none';
     }
-    document.getElementById('instWrap').style.display='none'; // cicilan (nonaktif sementara)
+    document.getElementById('instWrap').style.display='none'; // cicilan nonaktif dulu
   }catch(e){ toast(e.message); }
 }
 
 async function applyNow(){
   const nik = localStorage.getItem('kbm_nik'); if(!nik) return toast('Belum login');
-  const btn=document.getElementById('btnApply'); btn.classList.add('loading'); btn.disabled=true;
   try{
     await api('apply',{nik});
     toast('Pengajuan terkirim. Menunggu verifikasi admin.');
     refreshStatus();
   }catch(e){ toast(e.message); }
-  finally{ btn.classList.remove('loading'); btn.disabled=false; }
 }
 function refreshStatus(){ renderHome(); renderLoans(); }
 
-/* ============ LOANS ============ */
+/* LOANS */
 async function renderLoans(){
   const nik = localStorage.getItem('kbm_nik'); if(!nik) return;
   const list=document.getElementById('loansList'); list.innerHTML='';
@@ -452,7 +459,7 @@ async function renderLoans(){
   }catch(e){ toast(e.message); }
 }
 
-/* ============ ACCOUNT ============ */
+/* ACCOUNT */
 async function renderAccount(){
   const nik = localStorage.getItem('kbm_nik'); if(!nik) return;
   try{
